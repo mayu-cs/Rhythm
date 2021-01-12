@@ -1,28 +1,84 @@
 #include "Play.h"
 #include "DxLib.h"
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <iostream>
+#include <stdexcept>
 #include <nlohmann/json.hpp>
+
+using nlohmann::json;
+json ScoreData;
+std::vector<int> MusicScore;
+
+std::vector<std::string> S_Split(std::string str, char key)
+{
+    int first = 0;
+    int last = str.find_first_of(key);
+
+    std::vector<std::string> result;
+
+    while (first < str.size())
+    {
+        std::string cache(str, first, last - first);
+        result.push_back(cache);
+
+        first = last + 1;
+        last = str.find_first_of(key, first);
+
+        if (last == std::string::npos)
+        {
+            last = str.size();
+        }
+    }
+
+    return result;
+}
 
 Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
     NomalNote(NomalNoteGraphHandle),
     Cursor(CursorGraphHandle)
 {
-    Background = LoadGraph("Resources\\Background\\gameBack.png");
-
+#pragma region Initialize_IO
+    //IO初期化
     input.Initialize();
     MouseX = input.GetMousePointX();
+#pragma endregion
 
-    //flag_y座標_初期化
-    for (auto i = 0; i < BAR_NUM; i++) {
-        for (auto j = 0; j < LANE_NUM; j++) {
-            bar_flag[j][i] = false;
-        }
-        bar_PosY[i] = 0;
+#pragma region Initialize_Image
+    //画像初期化
+    Background = LoadGraph("Resources\\Background\\gameBack.png");
+#pragma endregion
+
+#pragma region Initialize_Score
+    //譜面読み込み/整形
+    std::ifstream stream("Resources\\MusicScore\\Data\\Musics.json");
+    ScoreData = json::parse(stream);
+    std::string score = ScoreData["map"];
+
+    //削除文字
+    char chars[] = "\"";
+
+    for (auto i = 0; i < strlen(chars); i++) {
+        score.erase(remove(score.begin(), score.end(), chars[i]), score.end());
     }
+
+    for (auto cache_str : S_Split(score, ',')) {
+        std::istringstream stream = std::istringstream(cache_str);
+        int cache;
+        stream >> cache;
+        MusicScore.push_back(cache);
+    }
+#pragma endregion
+
 
     //システム変数初期化
     counter = 0;
-    BPM = 160.0;
     speed = 5.f;
+    BPM = 150;
+
+    for (auto i = 0; i < 200; i++) flag[i] = false;
 
     time_sync.SetBaseTime();
 }
@@ -55,9 +111,9 @@ void Scene::MakeObject()
 {
     //bar生成
     if (time_sync.GetTime1MSSync() >= 60000 / BPM * counter) {
-        for (int i = 0; i < LANE_NUM; i++) {
-            bar_flag[i][counter % BAR_NUM] = true;
-            bar_PosY[counter % BAR_NUM] = -100.f;
+        if (MusicScore[counter] != 0 && flag[counter] == false) {
+            flag[counter] = true;
+            PosY[counter] = -100.f;
         }
         counter++;
     }
@@ -65,45 +121,11 @@ void Scene::MakeObject()
 
 void Scene::UpdateObject()
 {
-    //bar座標更新
-    for (int i = 0; i < LANE_NUM; i++) {
-        for (int j = 0; j < BAR_NUM; j++) {
-            bar_PosY[j] += speed;
-            if (bar_flag[i][j]) {
-                if (bar_PosY[j] > WIN_HEIGHT + 10) {
-                    bar_flag[i][j] = false; //画面外に出たらfalse
-                }
-            }
-        }
-    }
-
-    if (input.GetKeyDown(KEY_INPUT_SPACE)) {
-        for (int i = 0; i < LANE_NUM; i++) {
-            for (int j = 0; j < BAR_NUM; j++) {
-                if (bar_flag[i][j]) {
-                    switch (i) {
-                    case 0:
-                        if (collision.CircleCollision(C_MouseX, 770, 193 / 2, ((WIN_WIDTH + 572) / 4) / 2 - (105 / 2), bar_PosY[j] - 10.f, 105 / 2)) {
-                            bar_flag[i][j] = false; //あたったらfalse
-                        }
-                        break;
-                    case 1:
-                        if (collision.CircleCollision(C_MouseX, 770, 193 / 2, ((WIN_WIDTH + 572) / 4 * 3) / 2 - (105 / 2), bar_PosY[j] - 10.f, 105 / 2)) {
-                            bar_flag[i][j] = false; //あたったらfalse
-                        }
-                        break;
-                    case 2:
-                        if (collision.CircleCollision(C_MouseX, 770, (193 / 2), (WIN_WIDTH + 572) - (((WIN_WIDTH + 572) / 4) * 3) / 2 - (105 / 2), bar_PosY[j] - 10.f, 105 / 2)) {
-                            bar_flag[i][j] = false; //あたったらfalse
-                        }
-                        break;
-                    case 3:
-                        if (collision.CircleCollision(C_MouseX, 770, (193 / 2), (WIN_WIDTH + 572) - ((WIN_WIDTH + 572) / 4) / 2 - (105 / 2), bar_PosY[j] - 10.f, 105 / 2)) {
-                            bar_flag[i][j] = false; //あたったらfalse
-                        }
-                        break;
-                    }
-                }
+    for (auto i = 0; i < 200; i++) {
+        if (flag[i] == true) {
+            PosY[i] += speed;
+            if (PosY[i] > WIN_HEIGHT + 10) {
+                flag[i] = false;
             }
         }
     }
@@ -111,53 +133,30 @@ void Scene::UpdateObject()
 
 void Scene::DrawObject()
 {
-    Clump_Point();
+    //Clump_Point();
 
-    //bar描画
-    for (auto i = 0; i < LANE_NUM; i++) {
-        for (auto j = 0; j < BAR_NUM; j++) {
-            if (bar_flag[i][j]) {
-                /*DrawCircle(100.f + i * 150.f, bar_PosY[j] - 10.f, 25, GetColor(255, 255, 255), TRUE);*/
-                switch (i) {
-                case 0:
-                    DrawGraph(572 + (WIN_WIDTH / 4) / 2 - (105 / 2), bar_PosY[j] - 10.f, NomalNote, true);
-                    break;
+    for (auto i = 0; i < 200; i++) {
+        if (flag[i] == true) {
+            switch (MusicScore[i]) {
                 case 1:
-                    DrawGraph(572 + (WIN_WIDTH / 4 * 3) / 2 - (105 / 2), bar_PosY[j] - 10.f, NomalNote, true);
+                    DrawGraph(572 + (WIN_WIDTH / 4) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);
                     break;
                 case 2:
-                    DrawGraph(572 + WIN_WIDTH - ((WIN_WIDTH / 4) * 3) / 2 - (105 / 2), bar_PosY[j] - 10.f, NomalNote, true);
+                    DrawGraph(572 + (WIN_WIDTH / 4 * 3) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);
                     break;
                 case 3:
-                    DrawGraph(572 + WIN_WIDTH - (WIN_WIDTH / 4) / 2 - (105 / 2), bar_PosY[j] - 10.f, NomalNote, true);
+                    DrawGraph(572 + WIN_WIDTH - ((WIN_WIDTH / 4) * 3) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);
                     break;
-                }
+                case 4:
+                    DrawGraph(572 + WIN_WIDTH - (WIN_WIDTH / 4) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);
+                    break;
             }
+            /*DrawGraph(572 + (WIN_WIDTH / 4) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);*/
         }
     }
 }
 
 void Scene::Clump_Point()
 {
-
-    if (MouseX <= (WIN_WIDTH + 572) / 4) {
-        /*DrawCircle((WIN_WIDTH / 4) / 2, WIN_HEIGHT / 5 * 4, 25, GetColor(255, 255, 255), true);*/
-        DrawGraph(572 + (WIN_WIDTH / 4) / 2 - (197 / 2), 770, Cursor, true);
-        C_MouseX = (WIN_WIDTH + 572 / 4) / 2 - (197 / 2);
-    }
-    else if (MouseX <= ((WIN_WIDTH + 572) / 4) * 2) {
-        /*DrawCircle((WIN_WIDTH / 4 * 3) / 2, WIN_HEIGHT / 5 * 4, 25, GetColor(255, 255, 255), true);*/
-        DrawGraph(572 + (WIN_WIDTH / 4 * 3) / 2 - (197 / 2), 770, Cursor, true);
-        C_MouseX = (WIN_WIDTH + 572 / 4 * 3) / 2 - (197 / 2);
-    }
-    else if (MouseX <= ((WIN_WIDTH + 572) / 4) * 3) {
-        /*DrawCircle(WIN_WIDTH - ((WIN_WIDTH / 4) * 3) / 2, WIN_HEIGHT / 5 * 4, 25, GetColor(255, 255, 255), true);*/
-        DrawGraph(572 + (WIN_WIDTH - (572 + WIN_WIDTH / 4) * 3) / 2 - (197 / 2), 770, Cursor, true);
-        C_MouseX = WIN_WIDTH + 572 - ((WIN_WIDTH + 572 / 4) * 3) / 2 - (197 / 2);
-    }
-    else {
-        /*DrawCircle(WIN_WIDTH - (WIN_WIDTH / 4) / 2, WIN_HEIGHT / 5 * 4, 25, GetColor(255, 255, 255), true);*/
-        DrawGraph(572 + WIN_WIDTH - (572 + WIN_WIDTH / 4) / 2 - (197 / 2), 770, Cursor, true);
-        C_MouseX = WIN_WIDTH + 572 - (WIN_WIDTH + 572 / 4) / 2 - (197 / 2);
-    }
+    //null
 }

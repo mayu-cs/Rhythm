@@ -32,13 +32,15 @@ private:
 	int counter;
 	int MouseX;
 	int C_MouseX = 0;
+	unsigned int count;
 
 	//Sounds
 	double BPM;
 	double speed;
 
 	//images
-	bool bar_flag[LANE_NUM][BAR_NUM];
+	bool flag[200];
+	double PosY[200];
 	double bar_PosY[BAR_NUM];
 
 	int Cursor;
