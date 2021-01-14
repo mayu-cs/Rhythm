@@ -75,7 +75,7 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
 
     //ƒVƒXƒeƒ€•Ï”‰Šú‰»
     counter = 0;
-    speed = 5.f;
+    speed = 10.f;
     BPM = 150;
 
     for (auto i = 0; i < 200; i++) flag[i] = false;
@@ -139,19 +139,18 @@ void Scene::DrawObject()
         if (flag[i] == true) {
             switch (MusicScore[i]) {
                 case 1:
-                    DrawGraph(572 + (WIN_WIDTH / 4) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);
+                    DrawGraph(572 + (WIN_WIDTH / 4) / 2 - (105 / 2) - 20, PosY[i] - 10.0, NomalNote, true);
                     break;
                 case 2:
-                    DrawGraph(572 + (WIN_WIDTH / 4 * 3) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);
+                    DrawGraph(572 + (WIN_WIDTH / 4 * 3) / 2 - (105 / 2) - 20, PosY[i] - 10.0, NomalNote, true);
                     break;
                 case 3:
-                    DrawGraph(572 + WIN_WIDTH - ((WIN_WIDTH / 4) * 3) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);
+                    DrawGraph(572 + WIN_WIDTH - ((WIN_WIDTH / 4) * 3) / 2 - (105 / 2) - 20, PosY[i] - 10.0, NomalNote, true);
                     break;
                 case 4:
-                    DrawGraph(572 + WIN_WIDTH - (WIN_WIDTH / 4) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);
+                    DrawGraph(572 + WIN_WIDTH - (WIN_WIDTH / 4) / 2 - (105 / 2) - 20, PosY[i] - 10.0, NomalNote, true);
                     break;
             }
-            /*DrawGraph(572 + (WIN_WIDTH / 4) / 2 - (105 / 2), PosY[i] - 10.0, NomalNote, true);*/
         }
     }
 }
