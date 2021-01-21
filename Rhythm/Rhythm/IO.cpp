@@ -51,3 +51,8 @@ int Input::GetMousePointX() {
 int Input::GetMousePointY() {
 	return MousePosY;
 }
+
+bool Input::GetMouseClick(const int MouseInput)
+{
+	return GetMouseInput() & MouseInput;
+}

@@ -1,5 +1,6 @@
 #include "Play.h"
 #include "DxLib.h"
+#include "Particle.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -11,6 +12,7 @@
 using nlohmann::json;
 json ScoreData;
 std::vector<int> MusicScore;
+Particle **particle;
 
 std::vector<std::string> S_Split(std::string str, char key)
 {
@@ -40,18 +42,20 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
     NomalNote(NomalNoteGraphHandle),
     Cursor(CursorGraphHandle)
 {
-#pragma region Initialize_IO
     //IO初期化
-    input.Initialize();
-    MouseX = input.GetMousePointX();
-#pragma endregion
+    input = new Input();
+    input->Initialize();
+    MouseX = input->GetMousePointX();
+    MouseY = input->GetMousePointY();
 
-#pragma region Initialize_Image
     //画像初期化
     Background = LoadGraph("Resources\\Background\\gameBack.png");
-#pragma endregion
+    particle_img = LoadGraph("Resources\\Particle\\particle.png");
 
-#pragma region Initialize_Score
+    particle = new Particle*[32];
+    for (auto i = 0; i < 32; i++) {
+        particle[i] = new Particle(particle_img, (double)MouseX, (double)MouseY, 5, 18);
+    }
     //譜面読み込み/整形
     std::ifstream stream("Resources\\MusicScore\\Data\\Musics.json");
     ScoreData = json::parse(stream);
@@ -70,12 +74,10 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
         stream >> cache;
         MusicScore.push_back(cache);
     }
-#pragma endregion
-
 
     //システム変数初期化
     counter = 0;
-    speed = 10.f;
+    speed = 11.f;
     BPM = 150;
 
     for (auto i = 0; i < 200; i++) flag[i] = false;
@@ -83,21 +85,28 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
     time_sync.SetBaseTime();
 }
 
+Scene::~Scene()
+{
+    delete input;
+}
+
 void Scene::GameStart()
 {
     while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0)
     {
         //初期化
-        input.Update();
+        input->Update();
+        MouseX = input->GetMousePointX();
+        MouseY = input->GetMousePointY();
         DrawGraph(0, 0, Background, true);
 
-        MouseX = input.GetMousePointX();
+       /* MouseX = input->GetMousePointX();
         if (MouseX <= 0) {
             MouseX = 25;
         }
         else if (MouseX >= WIN_WIDTH - 25) {
             MouseX = WIN_WIDTH - 25;
-        }
+        }*/
 
         MakeObject();
         UpdateObject();
@@ -111,9 +120,18 @@ void Scene::MakeObject()
 {
     //bar生成
     if (time_sync.GetTime1MSSync() >= 60000 / BPM * counter) {
+        if (MusicScore.size() == counter) { return; }
+
         if (MusicScore[counter] != 0 && flag[counter] == false) {
             flag[counter] = true;
             PosY[counter] = -100.f;
+
+            switch (MusicScore[counter]) {
+                case 1: PosX[counter] = LANE1_POSITION_X; break;
+                case 2: PosX[counter] = LANE2_POSITION_X; break;
+                case 3: PosX[counter] = LANE3_POSITION_X; break;
+                case 4: PosX[counter] = LANE4_POSITION_X; break;
+            }
         }
         counter++;
     }
@@ -127,35 +145,54 @@ void Scene::UpdateObject()
             if (PosY[i] > WIN_HEIGHT + 10) {
                 flag[i] = false;
             }
+
+#ifdef DEBUG
+            oldClick = ClickFlag;
+            if (GetMouseInput() & MOUSE_INPUT_LEFT) { ClickFlag = true; }
+            else { ClickFlag = false; }
+
+            if (input->GetMouseClick(MOUSE_INPUT_LEFT)) {
+                if (collision.CircleCollision(
+                    PosX[i] + 198 / 2, PosY[i] + 198 / 2, 198 / 2,
+                    (double)(MouseX), (double)(MouseY), 10.0 )) {
+                    flag[i] = false;
+                }
+
+                if (oldClick == false && ClickFlag == true) {
+                    for (auto i = 0; i < 32; i++) {
+                        delete particle[i];
+                        particle[i] = new Particle(particle_img, (double)MouseX - 50, (double)MouseY - 50, 5, 18);
+                    }
+                    Particle_Flag = true;
+
+                }
+            }
+
+            if (Particle_Flag) {
+                for (auto i = 0; i < 32; i++) {
+                    particle[i]->Draw();
+
+                    if (particle[32 - 1]->GetFlag() == false) {
+                        Particle_Flag = false;
+                    }
+                }
+            }
+#endif // DEBUG
+
         }
     }
+
+#ifdef DEBUG
+    DrawCircle(MouseX, MouseY, 10, GetColor(255, 255, 255), true);
+#endif // DEBUG
+
 }
 
 void Scene::DrawObject()
 {
-    //Clump_Point();
-
     for (auto i = 0; i < 200; i++) {
         if (flag[i] == true) {
-            switch (MusicScore[i]) {
-                case 1:
-                    DrawGraph(572 + (WIN_WIDTH / 4) / 2 - (105 / 2) - 20, PosY[i] - 10.0, NomalNote, true);
-                    break;
-                case 2:
-                    DrawGraph(572 + (WIN_WIDTH / 4 * 3) / 2 - (105 / 2) - 20, PosY[i] - 10.0, NomalNote, true);
-                    break;
-                case 3:
-                    DrawGraph(572 + WIN_WIDTH - ((WIN_WIDTH / 4) * 3) / 2 - (105 / 2) - 20, PosY[i] - 10.0, NomalNote, true);
-                    break;
-                case 4:
-                    DrawGraph(572 + WIN_WIDTH - (WIN_WIDTH / 4) / 2 - (105 / 2) - 20, PosY[i] - 10.0, NomalNote, true);
-                    break;
-            }
+            DrawGraph(PosX[i], PosY[i] - 10.0, NomalNote, true);
         }
     }
-}
-
-void Scene::Clump_Point()
-{
-    //null
 }
