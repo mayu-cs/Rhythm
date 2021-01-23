@@ -1,10 +1,8 @@
 #include "Line.h"
 #include "DxLib.h"
 
-Line::Line(int x) :
-    x(x)
-{
-
+Line::Line(int x) : x(x) { 
+    height = 792 ;
 }
 
 void Line::draw()

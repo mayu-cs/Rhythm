@@ -10,7 +10,7 @@ Particle::Particle(const int Handle, double PosX, double PosY, double MinSize, d
 	XSize = MinSize + (double)(rand() * (MaxSize - MinSize + 1.0) / (1.0 + RAND_MAX));
 	YSize = MinSize + (double)(rand() * (MaxSize - MinSize + 1.0) / (1.0 + RAND_MAX));
 	UpPos = (double)((rand() % 20 + 30) / 5.0);
-	Trans = 0.5;
+	Trans = 2;
 	Transfer = 255;
 	Flag = true;
 }
@@ -19,10 +19,10 @@ void Particle::Draw()
 {
 	if (Flag == false) { return; }
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, Transfer);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)Transfer);
 	DrawExtendGraph(PosX, PosY, PosX + XSize, PosY + YSize, particle, true);
 	PosY -= UpPos;
-	Transfer -= UpPos;
+	Transfer -= Trans;
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	if (Transfer <= 0) {

@@ -8,8 +8,8 @@ private:
 	double XSize;
 	double YSize;
 	double UpPos;
-	int Trans = -1;
-	int Transfer;
+	double Trans;
+	double Transfer;
 	bool Flag;
 	int particle;
 

@@ -6,7 +6,7 @@ class Line
 {
 private:
 	int x;
-	int height = 792;
+	int height;
 
 public:
 	Line(int x);

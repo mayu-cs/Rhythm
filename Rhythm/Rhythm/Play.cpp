@@ -21,16 +21,14 @@ std::vector<std::string> S_Split(std::string str, char key)
 
     std::vector<std::string> result;
 
-    while (first < str.size())
-    {
+    while (first < str.size()) {
         std::string cache(str, first, last - first);
         result.push_back(cache);
 
         first = last + 1;
         last = str.find_first_of(key, first);
 
-        if (last == std::string::npos)
-        {
+        if (last == std::string::npos) {
             last = str.size();
         }
     }
@@ -76,9 +74,11 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
     }
 
     //ƒVƒXƒeƒ€•Ï”‰Šú‰»
+    MusicHandle = LoadSoundMem("Resources\\MusicScore\\Data\\OP.mp3");
     counter = 0;
-    speed = 11.f;
-    BPM = 150;
+    speed = 12.f;
+    BPM = 110;
+    SoundFlag = false;
 
     for (auto i = 0; i < 200; i++) flag[i] = false;
 
@@ -94,6 +94,10 @@ void Scene::GameStart()
 {
     while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0)
     {
+        if (counter == 3 && SoundFlag == false) {
+            PlaySoundMem(MusicHandle, DX_PLAYTYPE_BACK);
+            SoundFlag = true;
+        }
         //‰Šú‰»
         input->Update();
         MouseX = input->GetMousePointX();
@@ -111,6 +115,15 @@ void Scene::GameStart()
         MakeObject();
         UpdateObject();
         DrawObject();
+        if (Particle_Flag) {
+            for (auto i = 0; i < 32; i++) {
+                particle[i]->Draw();
+
+                if (particle[32 - 1]->GetFlag() == false) {
+                    Particle_Flag = false;
+                }
+            }
+        }
 
         if (CheckHitKey(KEY_INPUT_ESCAPE) == 1) { break; }
     }
@@ -165,16 +178,6 @@ void Scene::UpdateObject()
                     }
                     Particle_Flag = true;
 
-                }
-            }
-
-            if (Particle_Flag) {
-                for (auto i = 0; i < 32; i++) {
-                    particle[i]->Draw();
-
-                    if (particle[32 - 1]->GetFlag() == false) {
-                        Particle_Flag = false;
-                    }
                 }
             }
 #endif // DEBUG

@@ -48,6 +48,7 @@ private:
 	//Sounds
 	double BPM;
 	double speed;
+	bool SoundFlag;
 
 	//images
 	bool flag[200];
@@ -58,5 +59,6 @@ private:
 	int Cursor;
 	int NomalNote;
 	int Background;
+	int MusicHandle;
 	int particle_img;
 };
