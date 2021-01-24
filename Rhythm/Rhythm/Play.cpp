@@ -40,7 +40,7 @@ std::vector<std::string> S_Split(std::string str, char key)
 void loadJson()
 {
     //譜面読み込み/整形
-    std::ifstream stream("Resources\\MusicScore\\Data\\Musics.json");
+    std::ifstream stream("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.json");
     ScoreData = nlohmann::json::parse(stream);
     std::string score = ScoreData["map"];
 
@@ -81,6 +81,7 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
 
     //譜面データ初期化
     loadJson();
+    PlayScore = 0;
     PosX = new double[MusicScore.size()];
     PosY = new double[MusicScore.size()];
     flag = new bool[MusicScore.size()];
@@ -90,13 +91,14 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
 
     //システム変数初期化
     MusicHandle = LoadSoundMem("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.mp3");
+    ChangeVolumeSoundMem(50, MusicHandle);
     counter = 0;
     speed = 20.f;
     BPM = 177;
     SoundFlag = false;
 
     //フォント
-    Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 15, 3);
+    Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 40, 8, DX_FONTTYPE_ANTIALIASING_EDGE);
 
     //判定座標
     JudgePosX[0] = LANE1_POSITION_X;
@@ -191,7 +193,7 @@ void Scene::Update()
             if (ClickFlag) {
                 if (collision.CircleCollision(
                     PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 2.0,
-                    (double)CursorPosX + 100.0, (double)CursorPosY + 100.0, 15.0, &Distance)) {
+                    PosX[i] + 198.0 / 2.0, (double)CursorPosY + 100.0, 30.0, &Distance)) {
                     flag[i] = false;
                     Timing_Judge(MusicScore[i], Distance);
                 }
@@ -233,18 +235,22 @@ void Scene::Draw()
     for (auto i = 0; i < 4; i++) {
         if (JudgePosY[i] <= 789) {
             SetDrawBlendMode(DX_BLENDMODE_ALPHA, Trans[i]);
-            SetFontSize(45);
-            DrawFormatString(JudgePosX[i] + 50, JudgePosY[i], GetColor(255, 255, 255), "%s", Judge[i].c_str());
+            if (Judge[i] == "Parfect") {
+                DrawStringToHandle(JudgePosX[i] + 5, JudgePosY[i], Judge[i].c_str(), GetColor(255, 255, 255), Font);
+            }
+            else if (Judge[i] == "Excellent") {
+                DrawStringToHandle(JudgePosX[i] - 15, JudgePosY[i], Judge[i].c_str(), GetColor(255, 255, 255), Font);
+            }
+            else {
+                DrawStringToHandle(JudgePosX[i] + 40, JudgePosY[i], Judge[i].c_str(), GetColor(255, 255, 255), Font);
+            }
             JudgePosY[i]--;
             Trans[i] -= 4;
             SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
         }
-
-        DrawCircle((double)CursorPosX + 100.0, (double)CursorPosY + 100.0, 15.0, GetColor(255, 255, 255), true);
     }
-
 #ifdef DEBUG
-    DrawStringToHandle(10, 500, std::to_string(Distance).c_str(), GetColor(255, 255, 255), Font);
+    DrawStringToHandle(10, 100, std::to_string(PlayScore).c_str(), GetColor(255, 255, 255), Font);
 #endif // DEBUG
 }
 
@@ -272,22 +278,25 @@ void Scene::ClumpCursor()
 
 void Scene::Timing_Judge(const unsigned int lane, const double Distance)
 {
-    if (Distance < 30) {
+    if (Distance < 50) {
         Judge[lane - 1] = "Parfect";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
-    }
-    else if (Distance < 50) {
-        Judge[lane - 1] = "Excerent";
-        JudgePosY[lane - 1] = 789;
-        Trans[lane - 1] = 255;
+        PlayScore += 220;
     }
     else if (Distance < 70) {
+        Judge[lane - 1] = "Excellent";
+        JudgePosY[lane - 1] = 789;
+        Trans[lane - 1] = 255;
+        PlayScore += 100;
+    }
+    else if (Distance < 80) {
         Judge[lane - 1] = "Good";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
+        PlayScore += 50;
     }
-    else if (Distance >= 70) {
+    else if (Distance >= 80) {
         Judge[lane - 1] = "Bad";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;

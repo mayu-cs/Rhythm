@@ -51,6 +51,7 @@ private:
 	const int CursorPosY = 790;
 
 	//Counter
+	unsigned int PlayScore;
 	unsigned int count;
 	unsigned int Trans[4];
 
