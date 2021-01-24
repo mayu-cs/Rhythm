@@ -1,13 +1,13 @@
 #pragma once
 
 #pragma region Definition
-constexpr auto SET_1US = static_cast<long long>(1);
-constexpr auto SET_10US = static_cast<long long>(10);
-constexpr auto SET_100US = static_cast<long long>(100);
-constexpr auto SET_1MS = static_cast<long long>(1000);
-constexpr auto SET_10MS = static_cast<long long>(10000);
-constexpr auto SET_100MS = static_cast<long long>(100000);
-constexpr auto SET_1S = static_cast<long long>(1000000);
+constexpr auto SET_1US		=	static_cast<long long>(1);
+constexpr auto SET_10US		=	static_cast<long long>(10);
+constexpr auto SET_100US	=	static_cast<long long>(100);
+constexpr auto SET_1MS		=	static_cast<long long>(1000);
+constexpr auto SET_10MS		=	static_cast<long long>(10000);
+constexpr auto SET_100MS	=	static_cast<long long>(100000);
+constexpr auto SET_1S		=	static_cast<long long>(1000000);
 #pragma endregion
 
 class TimeSync
@@ -15,6 +15,7 @@ class TimeSync
 private:
 	//äÓèÄéûä‘
 	long long baseTime;
+	long long cacheTime;
 
 	//åªÉtÉåÅ[ÉÄéûä‘
 	long long Time;

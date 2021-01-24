@@ -16,12 +16,9 @@ public:
 		SetWindowSizeExtendRate(1.0);
 		SetBackgroundColor(30, 30, 30);
 		SetWaitVSyncFlag(TRUE);
+		if (DxLib_Init() == -1) { return -1; }
 
-		if (DxLib_Init() == -1) {
-			return -1;
-		}
 		SetDrawScreen(DX_SCREEN_BACK);
-
 		return 0;
 	}
 };

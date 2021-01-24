@@ -9,11 +9,12 @@
 #include <stdexcept>
 #include <nlohmann/json.hpp>
 
-using nlohmann::json;
-json ScoreData;
-std::vector<int> MusicScore;
 Particle **particle;
+nlohmann::json ScoreData;
+std::vector<int> MusicScore;
+std::string Judge[4];
 
+//文字列Split関数(C#にあるやつ<~.split(',')>)
 std::vector<std::string> S_Split(std::string str, char key)
 {
     int first = 0;
@@ -36,27 +37,11 @@ std::vector<std::string> S_Split(std::string str, char key)
     return result;
 }
 
-Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
-    NomalNote(NomalNoteGraphHandle),
-    Cursor(CursorGraphHandle)
+void loadJson()
 {
-    //IO初期化
-    input = new Input();
-    input->Initialize();
-    MouseX = input->GetMousePointX();
-    MouseY = input->GetMousePointY();
-
-    //画像初期化
-    Background = LoadGraph("Resources\\Background\\gameBack.png");
-    particle_img = LoadGraph("Resources\\Particle\\particle.png");
-
-    particle = new Particle*[32];
-    for (auto i = 0; i < 32; i++) {
-        particle[i] = new Particle(particle_img, (double)MouseX, (double)MouseY, 5, 18);
-    }
     //譜面読み込み/整形
     std::ifstream stream("Resources\\MusicScore\\Data\\Musics.json");
-    ScoreData = json::parse(stream);
+    ScoreData = nlohmann::json::parse(stream);
     std::string score = ScoreData["map"];
 
     //削除文字
@@ -72,130 +57,239 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
         stream >> cache;
         MusicScore.push_back(cache);
     }
+}
+
+Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
+    NomalNote(NomalNoteGraphHandle),
+    Cursor(CursorGraphHandle)
+{
+    //IO初期化
+    input = new Input();
+    input->Initialize();
+    MouseX = input->GetMousePointX();
+    MouseY = input->GetMousePointY();
+
+    //画像初期化
+    Background = LoadGraph("Resources\\Background\\gameBack.png");
+    PauseBack = LoadGraph("Resources\\Background\\PauseBack.png");
+    particle_img = LoadGraph("Resources\\Particle\\particle.png");
+
+    particle = new Particle*[PARTICLE_QUANTITY];
+    for (auto i = 0; i < PARTICLE_QUANTITY; i++) {
+        particle[i] = new Particle(particle_img, (double)MouseX, (double)MouseY, 5, 18);
+    }
+
+    //譜面データ初期化
+    loadJson();
+    PosX = new double[MusicScore.size()];
+    PosY = new double[MusicScore.size()];
+    flag = new bool[MusicScore.size()];
+    for (auto i = 0; i < MusicScore.size(); i++) {
+        flag[i] = false;
+    }
 
     //システム変数初期化
-    MusicHandle = LoadSoundMem("Resources\\MusicScore\\Data\\OP.mp3");
+    MusicHandle = LoadSoundMem("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.mp3");
     counter = 0;
-    speed = 12.f;
-    BPM = 110;
+    speed = 20.f;
+    BPM = 177;
     SoundFlag = false;
 
-    for (auto i = 0; i < 200; i++) flag[i] = false;
+    //フォント
+    Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 15, 3);
 
-    time_sync.SetBaseTime();
+    //判定座標
+    JudgePosX[0] = LANE1_POSITION_X;
+    JudgePosX[1] = LANE2_POSITION_X;
+    JudgePosX[2] = LANE3_POSITION_X;
+    JudgePosX[3] = LANE4_POSITION_X;
+    for (auto i = 0; i < 4; i++) {
+        JudgePosY[i] = 790;
+        Trans[i] = 255;
+    }
 }
 
 Scene::~Scene()
 {
     delete input;
+    delete[] PosX;
+    delete[] PosY;
+    delete[] flag;
 }
 
 void Scene::GameStart()
 {
-    while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0)
+    time_sync.SetBaseTime();
+
+    while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
     {
-        if (counter == 3 && SoundFlag == false) {
-            PlaySoundMem(MusicHandle, DX_PLAYTYPE_BACK);
-            SoundFlag = true;
-        }
-        //初期化
         input->Update();
-        MouseX = input->GetMousePointX();
-        MouseY = input->GetMousePointY();
-        DrawGraph(0, 0, Background, true);
 
-       /* MouseX = input->GetMousePointX();
-        if (MouseX <= 0) {
-            MouseX = 25;
+        if (PauseFlag == false) {
+            Update();
+            Draw();
+            ClumpCursor();
         }
-        else if (MouseX >= WIN_WIDTH - 25) {
-            MouseX = WIN_WIDTH - 25;
-        }*/
-
-        MakeObject();
-        UpdateObject();
-        DrawObject();
-        if (Particle_Flag) {
-            for (auto i = 0; i < 32; i++) {
-                particle[i]->Draw();
-
-                if (particle[32 - 1]->GetFlag() == false) {
-                    Particle_Flag = false;
-                }
-            }
+        else {
+            Draw();
+            Pause();
         }
 
-        if (CheckHitKey(KEY_INPUT_ESCAPE) == 1) { break; }
+        if (input->GetKeyDown(KEY_INPUT_E)) {
+            PauseFlag = true;
+        }
     }
 }
 
-void Scene::MakeObject()
+void Scene::Update()
 {
-    //bar生成
-    if (time_sync.GetTime1MSSync() >= 60000 / BPM * counter) {
+    if (counter == 1 && SoundFlag == false) {
+        PlaySoundMem(MusicHandle, DX_PLAYTYPE_BACK);
+        SoundFlag = true;
+    }
+
+    MouseX = input->GetMousePointX();
+    MouseY = input->GetMousePointY();
+    oldClick = ClickFlag;
+    if (input->GetKeyDown(KEY_INPUT_D) || input->GetKeyDown(KEY_INPUT_F) || 
+        input->GetKeyDown(KEY_INPUT_J) || input->GetKeyDown(KEY_INPUT_K)) { ClickFlag = true; }
+    else { ClickFlag = false; }
+
+    //パーティクル初期化
+    if (oldClick == false && ClickFlag == true) {
+        for (auto i = 0; i < PARTICLE_QUANTITY; i++) {
+            delete particle[i];
+            particle[i] = new Particle(particle_img, CursorPosX + 25.0, CursorPosY, 5.0, 18.0);
+        }
+        Particle_Flag = true;
+    }
+
+    //ノーツ生成
+    if (time_sync.GetTime1MSSync() >= (unsigned long long)60000 / BPM * counter) {
         if (MusicScore.size() == counter) { return; }
-
         if (MusicScore[counter] != 0 && flag[counter] == false) {
-            flag[counter] = true;
-            PosY[counter] = -100.f;
-
+            PosY[counter] = -100.0;
             switch (MusicScore[counter]) {
                 case 1: PosX[counter] = LANE1_POSITION_X; break;
                 case 2: PosX[counter] = LANE2_POSITION_X; break;
                 case 3: PosX[counter] = LANE3_POSITION_X; break;
                 case 4: PosX[counter] = LANE4_POSITION_X; break;
             }
+            flag[counter] = true;
         }
         counter++;
     }
-}
 
-void Scene::UpdateObject()
-{
-    for (auto i = 0; i < 200; i++) {
+    //ノーツ更新
+    for (auto i = 0; i < MusicScore.size(); i++) {
         if (flag[i] == true) {
             PosY[i] += speed;
-            if (PosY[i] > WIN_HEIGHT + 10) {
+            if (PosY[i] > WIN_HEIGHT + 10.0) {
                 flag[i] = false;
             }
 
-#ifdef DEBUG
-            oldClick = ClickFlag;
-            if (GetMouseInput() & MOUSE_INPUT_LEFT) { ClickFlag = true; }
-            else { ClickFlag = false; }
-
-            if (input->GetMouseClick(MOUSE_INPUT_LEFT)) {
+            if (ClickFlag) {
                 if (collision.CircleCollision(
-                    PosX[i] + 198 / 2, PosY[i] + 198 / 2, 198 / 2,
-                    (double)(MouseX), (double)(MouseY), 10.0 )) {
+                    PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 2.0,
+                    (double)CursorPosX + 100.0, (double)CursorPosY + 100.0, 15.0, &Distance)) {
                     flag[i] = false;
-                }
-
-                if (oldClick == false && ClickFlag == true) {
-                    for (auto i = 0; i < 32; i++) {
-                        delete particle[i];
-                        particle[i] = new Particle(particle_img, (double)MouseX - 50, (double)MouseY - 50, 5, 18);
-                    }
-                    Particle_Flag = true;
-
+                    Timing_Judge(MusicScore[i], Distance);
                 }
             }
-#endif // DEBUG
+        }
+    }
+}
 
+void Scene::Pause()
+{
+    DrawGraph(0, 0, PauseBack, true);
+    if (input->GetKeyDown(KEY_INPUT_ESCAPE)) {
+        PauseFlag = false;
+    }
+}
+
+void Scene::Draw()
+{
+    DrawGraph(0, 0, Background, true);
+
+    //ノーツ描画
+    for (auto i = 0; i < MusicScore.size(); i++) {
+        if (flag[i] == true) {
+            DrawGraph(PosX[i], PosY[i], NomalNote, true);
         }
     }
 
-#ifdef DEBUG
-    DrawCircle(MouseX, MouseY, 10, GetColor(255, 255, 255), true);
-#endif // DEBUG
+    //パーティクル描画
+    if (Particle_Flag) {
+        for (auto i = 0; i < PARTICLE_QUANTITY; i++) {
+            particle[i]->Draw();
 
+            if (particle[PARTICLE_QUANTITY - 1]->GetFlag() == false) {
+                Particle_Flag = false;
+            }
+        }
+    }
+
+    for (auto i = 0; i < 4; i++) {
+        if (JudgePosY[i] <= 789) {
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, Trans[i]);
+            SetFontSize(45);
+            DrawFormatString(JudgePosX[i] + 50, JudgePosY[i], GetColor(255, 255, 255), "%s", Judge[i].c_str());
+            JudgePosY[i]--;
+            Trans[i] -= 4;
+            SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+        }
+
+        DrawCircle((double)CursorPosX + 100.0, (double)CursorPosY + 100.0, 15.0, GetColor(255, 255, 255), true);
+    }
+
+#ifdef DEBUG
+    DrawStringToHandle(10, 500, std::to_string(Distance).c_str(), GetColor(255, 255, 255), Font);
+#endif // DEBUG
 }
 
-void Scene::DrawObject()
+void Scene::ClumpCursor()
 {
-    for (auto i = 0; i < 200; i++) {
-        if (flag[i] == true) {
-            DrawGraph(PosX[i], PosY[i] - 10.0, NomalNote, true);
-        }
+    if (MouseX <= 550) {
+        CursorPosX = LANE1_POSITION_X - 25.0;
+    }
+    else if (MouseX >= 550 && MouseX <= 770) {
+        CursorPosX = LANE1_POSITION_X - 25.0;
+    }
+    else if (MouseX >= 770 && MouseX <= 980) {
+        CursorPosX = LANE2_POSITION_X - 25.0;
+    }
+    else if (MouseX >= 980 && MouseX <= 1185) {
+        CursorPosX = LANE3_POSITION_X - 25.0;
+    }
+    else {
+        CursorPosX = LANE4_POSITION_X - 25.0;
+    }
+
+    //カーソル描画
+    DrawGraph(CursorPosX, CursorPosY, Cursor, true);
+}
+
+void Scene::Timing_Judge(const unsigned int lane, const double Distance)
+{
+    if (Distance < 30) {
+        Judge[lane - 1] = "Parfect";
+        JudgePosY[lane - 1] = 789;
+        Trans[lane - 1] = 255;
+    }
+    else if (Distance < 50) {
+        Judge[lane - 1] = "Excerent";
+        JudgePosY[lane - 1] = 789;
+        Trans[lane - 1] = 255;
+    }
+    else if (Distance < 70) {
+        Judge[lane - 1] = "Good";
+        JudgePosY[lane - 1] = 789;
+        Trans[lane - 1] = 255;
+    }
+    else if (Distance >= 70) {
+        Judge[lane - 1] = "Bad";
+        JudgePosY[lane - 1] = 789;
+        Trans[lane - 1] = 255;
     }
 }

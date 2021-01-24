@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "IO.h"
 #include "TimeSync.h"
 #include "Collision.h"
@@ -8,13 +7,17 @@
 const int WIN_WIDTH = 810;
 extern const int WIN_HEIGHT;
 
+#define PARTICLE_QUANTITY 32
 #define LANE_NUM 4 //レーンの数
 #define BAR_NUM 20 //(画面に)同時に存在できる1レーンあたりのbarの最大数
 
-#define LANE1_POSITION_X 572 + (WIN_WIDTH / 4) / 2 - (105 / 2) - 20
-#define LANE2_POSITION_X 572 + (WIN_WIDTH / 4 * 3) / 2 - (105 / 2) - 20
-#define LANE3_POSITION_X 572 + WIN_WIDTH - ((WIN_WIDTH / 4) * 3) / 2 - (105 / 2) - 20
-#define LANE4_POSITION_X 572 + WIN_WIDTH - (WIN_WIDTH / 4) / 2 - (105 / 2) - 20
+/// <summary>
+/// LANE(n)_POSITION_X = nレーンのスクリーン描画座標s
+/// </summary>
+constexpr double LANE1_POSITION_X = 572.0 + (WIN_WIDTH / 4.0) / 2.0 - (105.0 / 2.0) - 20.0;
+constexpr double LANE2_POSITION_X = 572.0 + (WIN_WIDTH / 4.0 * 3.0) / 2.0 - (105.0 / 2.0) - 20.0;
+constexpr double LANE3_POSITION_X = 572.0 + WIN_WIDTH - ((WIN_WIDTH / 4.0) * 3.0) / 2.0 - (105.0 / 2.0) - 20.0;
+constexpr double LANE4_POSITION_X = 572.0 + WIN_WIDTH - (WIN_WIDTH / 4.0) / 2.0 - (105.0 / 2.0) - 20.0;
 
 #define DEBUG
 
@@ -30,20 +33,32 @@ private:
 	TimeSync time_sync;
 	Collision collision;
 
-	void MakeObject();
-	void UpdateObject();
-	void DrawObject();
+	void Update();
+	void Pause();
+	void Draw();
+	void ClumpCursor();
+	void Timing_Judge(const unsigned int lane, const double Distance);
 
 private:
-	//System
+	//Position
 	int counter;
 	int MouseX;
 	int MouseY;
-	int C_MouseX = 0;
+	int CursorPosX;
+	double Distance;
+	double JudgePosX[4];
+	double JudgePosY[4];
+	const int CursorPosY = 790;
+
+	//Counter
 	unsigned int count;
+	unsigned int Trans[4];
+
+	//Flag
 	bool ClickFlag = false;
 	bool oldClick = false;
 	bool Particle_Flag = false;
+	bool PauseFlag = false;
 
 	//Sounds
 	double BPM;
@@ -51,14 +66,15 @@ private:
 	bool SoundFlag;
 
 	//images
-	bool flag[200];
-	double PosX[200];
-	double PosY[200];
-	double bar_PosY[BAR_NUM];
+	double *PosX;
+	double *PosY;
+	bool *flag;
 
 	int Cursor;
 	int NomalNote;
 	int Background;
 	int MusicHandle;
 	int particle_img;
+	int PauseBack;
+	int Font;
 };
