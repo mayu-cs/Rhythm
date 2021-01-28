@@ -1,10 +1,9 @@
 #include "DxLib.h"
 
 #include "Start.h"
-#include "IO.h"
 #include "Result.h"
 #include "Play.h"
-#include "TimeSync.h"
+#include "Title.h"
 
 Start::Start()
 {
@@ -14,6 +13,9 @@ Start::Start()
 
 void Start::start()
 {
+	Title title;
+	title.start();
+
 	Scene scene(NomalNote, Cursor);
 	scene.GameStart();
 }

@@ -154,7 +154,8 @@ void Scene::Update()
     MouseY = input->GetMousePointY();
     oldClick = ClickFlag;
     if (input->GetKeyDown(KEY_INPUT_D) || input->GetKeyDown(KEY_INPUT_F) || 
-        input->GetKeyDown(KEY_INPUT_J) || input->GetKeyDown(KEY_INPUT_K)) { ClickFlag = true; }
+        input->GetKeyDown(KEY_INPUT_J) || input->GetKeyDown(KEY_INPUT_K) || 
+        input->GetMouseClick(KEY_INPUT_LEFT) || input->GetMouseClick(KEY_INPUT_RIGHT)) { ClickFlag = true; }
     else { ClickFlag = false; }
 
     //パーティクル初期化
@@ -169,6 +170,7 @@ void Scene::Update()
     //ノーツ生成
     if (time_sync.GetTime1MSSync() >= (unsigned long long)60000 / BPM * counter) {
         if (MusicScore.size() == counter) { return; }
+        if (MusicScore[counter] == 11) { return; }
         if (MusicScore[counter] != 0 && flag[counter] == false) {
             PosY[counter] = -100.0;
             switch (MusicScore[counter]) {
@@ -184,20 +186,21 @@ void Scene::Update()
 
     //ノーツ更新
     for (auto i = 0; i < MusicScore.size(); i++) {
-        if (flag[i] == true) {
-            PosY[i] += speed;
-            if (PosY[i] > WIN_HEIGHT + 10.0) {
-                flag[i] = false;
-            }
+        //ノーツがなければ次の処理
+        if (flag[i] == false) continue;
 
-            if (ClickFlag) {
-                if (collision.CircleCollision(
-                    PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 2.0,
-                    PosX[i] + 198.0 / 2.0, (double)CursorPosY + 100.0, 100.0, &Distance)) {
-                    flag[i] = false;
-                    Timing_Judge(MusicScore[i], Distance);
-                }
-            }
+        //スピード加算
+        PosY[i] += speed;
+        if (PosY[i] > WIN_HEIGHT + 10.0) {
+            flag[i] = false;
+        }
+
+        //クリック処理
+        if (ClickFlag && collision.CircleCollision(
+            PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 2.0,
+            PosX[i] + 198.0 / 2.0, (double)CursorPosY + 100.0, 100.0, &Distance)) {
+            flag[i] = false;
+            Timing_Judge(MusicScore[i], Distance);
         }
     }
 }
@@ -274,11 +277,6 @@ void Scene::ClumpCursor()
     else {
         CursorPosX = LANE4_POSITION_X - 25.0;
     }
-
-//    //カーソル描画
-//#ifdef DEBUG
-//    DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
-//#endif // DEBUG
 }
 
 void Scene::Timing_Judge(const unsigned int lane, const double Distance)
