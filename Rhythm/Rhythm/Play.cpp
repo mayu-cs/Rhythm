@@ -91,7 +91,7 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
 
     //システム変数初期化
     MusicHandle = LoadSoundMem("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.mp3");
-    ChangeVolumeSoundMem(50, MusicHandle);
+    ChangeVolumeSoundMem(70, MusicHandle);
     counter = 0;
     speed = 20.f;
     BPM = 177;
@@ -193,7 +193,7 @@ void Scene::Update()
             if (ClickFlag) {
                 if (collision.CircleCollision(
                     PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 2.0,
-                    PosX[i] + 198.0 / 2.0, (double)CursorPosY + 100.0, 30.0, &Distance)) {
+                    PosX[i] + 198.0 / 2.0, (double)CursorPosY + 100.0, 100.0, &Distance)) {
                     flag[i] = false;
                     Timing_Judge(MusicScore[i], Distance);
                 }
@@ -235,7 +235,7 @@ void Scene::Draw()
     for (auto i = 0; i < 4; i++) {
         if (JudgePosY[i] <= 789) {
             SetDrawBlendMode(DX_BLENDMODE_ALPHA, Trans[i]);
-            if (Judge[i] == "Parfect") {
+            if (Judge[i] == "Perfect") {
                 DrawStringToHandle(JudgePosX[i] + 5, JudgePosY[i], Judge[i].c_str(), GetColor(255, 255, 255), Font);
             }
             else if (Judge[i] == "Excellent") {
@@ -249,37 +249,42 @@ void Scene::Draw()
             SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
         }
     }
+
 #ifdef DEBUG
     DrawStringToHandle(10, 100, std::to_string(PlayScore).c_str(), GetColor(255, 255, 255), Font);
+    DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
+    DrawPixel(MouseX, 500, GetColor(255, 255, 255));
 #endif // DEBUG
 }
 
 void Scene::ClumpCursor()
 {
-    if (MouseX <= 550) {
+    if (MouseX - 100 <= 570) {
         CursorPosX = LANE1_POSITION_X - 25.0;
     }
-    else if (MouseX >= 550 && MouseX <= 770) {
+    else if (MouseX - 100 >= 570 && MouseX <= 780) {
         CursorPosX = LANE1_POSITION_X - 25.0;
     }
-    else if (MouseX >= 770 && MouseX <= 980) {
+    else if (MouseX >= 780 && MouseX <= 985) {
         CursorPosX = LANE2_POSITION_X - 25.0;
     }
-    else if (MouseX >= 980 && MouseX <= 1185) {
+    else if (MouseX - 100 >= 985 && MouseX <= 1185) {
         CursorPosX = LANE3_POSITION_X - 25.0;
     }
     else {
         CursorPosX = LANE4_POSITION_X - 25.0;
     }
 
-    //カーソル描画
-    DrawGraph(CursorPosX, CursorPosY, Cursor, true);
+//    //カーソル描画
+//#ifdef DEBUG
+//    DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
+//#endif // DEBUG
 }
 
 void Scene::Timing_Judge(const unsigned int lane, const double Distance)
 {
     if (Distance < 50) {
-        Judge[lane - 1] = "Parfect";
+        Judge[lane - 1] = "Perfect";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
         PlayScore += 220;
