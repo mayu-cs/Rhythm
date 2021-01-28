@@ -13,8 +13,10 @@ private:
 	int Back;
 	int StarA;
 	int StarB;
-
+	//曲のグラフィック
 	int Music;
+	int Music1;
+
 	bool Musicflag = false;
 	bool Musicflag2 = false;
 	//難易度用フラグ
@@ -35,7 +37,7 @@ private:
 	std::vector<std::string> Level;
 
 public:
-
+	//スクロール
 	void Left();
 	void Center();
 	void Right();
@@ -43,10 +45,13 @@ public:
 	~MusicSelect();
 	MusicSelect();
 
+	void LoadSelect();
 	void Select();
 	void levelSelect();
 	void SelectDraw();
 	void leveldraw();
+	void NameDraw();
+
 	std::string getnum();
 	std::string getlevel();
 

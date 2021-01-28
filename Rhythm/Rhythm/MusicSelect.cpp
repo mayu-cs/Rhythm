@@ -13,7 +13,7 @@ MusicSelect::MusicSelect()
 	StarB = LoadGraph("selectStarB.png");//難易度(☆)
 	//曲名-----
 	MusicName.push_back("曲1");
-	MusicName.push_back("曲2");
+	MusicName.push_back("迷宮リリス");
 	MusicName.push_back("曲3");
 	//難易度-----
 	Level.push_back("easy");
@@ -21,6 +21,7 @@ MusicSelect::MusicSelect()
 	Level.push_back("hard");
 	//曲のサムネイル(仮置き)
 	Music = LoadGraph("Music.png");
+	Music1 = LoadGraph("Music1.png");
 }
 
 MusicSelect::~MusicSelect()
@@ -43,14 +44,30 @@ void MusicSelect::SelectDraw()
 	if (LevelNumber == 2)hardflag = StarA;
 	else hardflag = StarB;
 
+	//文字の描画
+	NameDraw();
+
 	//スクロール----------
 	Right();
 	Center();
 	Left();
-	DrawExtendGraph(450 + ScrollX[1], 400 - ScrollY[1], 650 + (ScrollX[1] * 1.666667), 600, Music, TRUE);
-	DrawExtendGraph(750 + ScrollX[2], 200 - ScrollY[2], 1150 + ScrollX[3], 600, Music, TRUE);
-	DrawExtendGraph(1250 - ScrollX[0], 400 - ScrollY[0], 1450 - (ScrollX[0] * 0.6), 600, Music, TRUE);
+	DrawExtendGraph(450 + ScrollX[1], 400 - ScrollY[1], 650 + (ScrollX[1] * 1.666667), 600, Music1, TRUE);
+	DrawExtendGraph(750 + ScrollX[2], 200 - ScrollY[2], 1150 + ScrollX[3], 600, Music1, TRUE);
+	DrawExtendGraph(1250 - ScrollX[0], 400 - ScrollY[0], 1450 - (ScrollX[0] * 0.6), 600, Music1, TRUE);
 }
+
+//難易度＆曲名の表示
+void MusicSelect::NameDraw()
+{
+	DrawFormatString(750, 950, GetColor(255, 255, 255), "EASY", true);
+	DrawFormatString(900, 950, GetColor(255, 255, 255), "NORMAL", true);
+	DrawFormatString(1050, 950, GetColor(255, 255, 255), "HARD", true);
+
+	if (!Musicflag && !Musicflag2)
+		DrawString(800, 700, MusicName[MusicNumber].c_str(), GetColor(255, 255, 255), TRUE);
+
+}
+
 
 #ifdef TEST
 
