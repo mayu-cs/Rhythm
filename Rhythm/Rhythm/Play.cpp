@@ -140,6 +140,10 @@ void Scene::GameStart()
         if (input->GetKeyDown(KEY_INPUT_E)) {
             PauseFlag = true;
         }
+
+        if (input->GetKeyDown(KEY_INPUT_ESCAPE)) {
+            DxLib_End();
+        }
     }
 }
 
@@ -254,7 +258,7 @@ void Scene::Draw()
     }
 
 #ifdef DEBUG
-    DrawStringToHandle(10, 100, std::to_string(PlayScore).c_str(), GetColor(255, 255, 255), Font);
+    DrawStringToHandle(10, 100, /*std::to_string(PlayScore).c_str()*/"–À‹{ƒŠƒŠƒX", GetColor(255, 255, 255), Font);
     DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
     DrawPixel(MouseX, 500, GetColor(255, 255, 255));
 #endif // DEBUG
@@ -265,13 +269,13 @@ void Scene::ClumpCursor()
     if (MouseX - 100 <= 570) {
         CursorPosX = LANE1_POSITION_X - 25.0;
     }
-    else if (MouseX - 100 >= 570 && MouseX <= 780) {
+    else if (MouseX >= 570 && MouseX <= 780) {
         CursorPosX = LANE1_POSITION_X - 25.0;
     }
     else if (MouseX >= 780 && MouseX <= 985) {
         CursorPosX = LANE2_POSITION_X - 25.0;
     }
-    else if (MouseX - 100 >= 985 && MouseX <= 1185) {
+    else if (MouseX >= 985 && MouseX <= 1185) {
         CursorPosX = LANE3_POSITION_X - 25.0;
     }
     else {
