@@ -32,7 +32,6 @@ std::vector<std::string> S_Split(std::string str, char key)
 void Scene::loadJson(const char *ScoreFile)
 {
     //譜面読み込み/整形
-
     std::string ScoreFData = "Resources\\MusicScore\\Data\\";
     ScoreFData += ScoreFile;
     ScoreFData += ".json";
@@ -59,10 +58,10 @@ void Scene::loadJson(const char *ScoreFile)
 Scene::Scene(const char *MusicFile)
 {
     //IO初期化
-    input = new Input();
-    input->Initialize();
-    MouseX = input->GetMousePointX();
-    MouseY = input->GetMousePointY();
+    input           = new Input();
+    input           ->Initialize();
+    MouseX          = input->GetMousePointX();
+    MouseY          = input->GetMousePointY();
 
     //画像初期化
     Background      = LoadGraph ("Resources\\Background\\gameBack.png");
@@ -71,18 +70,18 @@ Scene::Scene(const char *MusicFile)
     line_img        = LoadGraph ("Resources\\Particle\\tap.png");
     NomalNote       = LoadGraph ("Resources\\Notes\\NomalNote.png");
     Cursor          = LoadGraph ("Resources\\Cursor\\Cursor.png");
+    particle        = new Particle*[PARTICLE_QUANTITY];
 
-    particle = new Particle*[PARTICLE_QUANTITY];
     for (auto i = 0; i < PARTICLE_QUANTITY; i++) {
         particle[i] = new Particle(particle_img, (double)MouseX, (double)MouseY, 5, 18);
     }
 
     //譜面データ初期化
     loadJson(MusicFile);
-    PlayScore = 0;
-    PosX = new double[MusicScore.size()];
-    PosY = new double[MusicScore.size()];
-    flag = new bool[MusicScore.size()];
+    PlayScore   = 0;
+    PosX        = new double[MusicScore.size()];
+    PosY        = new double[MusicScore.size()];
+    flag        = new bool[MusicScore.size()];
     for (auto i = 0; i < MusicScore.size(); i++) {
         flag[i] = false;
     }
@@ -203,7 +202,7 @@ void Scene::Update()
         //クリック処理
         if (ClickFlag && collision.CircleCollision(
             PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 2.0,
-            PosX[i] + 198.0 / 2.0, (double)CursorPosY + 100.0, 100.0, &Distance)) {
+            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 100.0, &Distance)) {
             flag[i] = false;
             Timing_Judge(MusicScore[i], Distance);
         }
