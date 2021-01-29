@@ -56,7 +56,7 @@ void Scene::loadJson(const char *ScoreFile)
     }
 }
 
-Scene::Scene(const char *MusicFile = "Lyrith -–À‹{ƒŠƒŠƒX-")
+Scene::Scene(const char *MusicFile)
 {
     //IO‰Šú‰»
     input = new Input();

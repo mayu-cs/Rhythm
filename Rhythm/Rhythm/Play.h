@@ -33,7 +33,7 @@ constexpr double LANE4_POSITION_X = 572.0 + WIN_WIDTH - (WIN_WIDTH / 4.0) / 2.0 
 class Scene
 {
 public:
-	Scene(const char *MusicFile = "Lyrith -–À‹{ƒŠƒŠƒX-");
+	Scene(const char *MusicFile);
 	~Scene();
 	void GameStart();
 
