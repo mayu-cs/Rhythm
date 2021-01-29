@@ -1,18 +1,10 @@
 #include "Play.h"
 #include "DxLib.h"
-#include "Particle.h"
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <iostream>
 #include <stdexcept>
-#include <nlohmann/json.hpp>
-
-Particle **particle;
-nlohmann::json ScoreData;
-std::vector<int> MusicScore;
-std::string Judge[4];
 
 //文字列Split関数(C#にあるやつ<~.split(',')>)
 std::vector<std::string> S_Split(std::string str, char key)
@@ -37,10 +29,15 @@ std::vector<std::string> S_Split(std::string str, char key)
     return result;
 }
 
-void loadJson()
+void Scene::loadJson(const char *ScoreFile)
 {
     //譜面読み込み/整形
-    std::ifstream stream("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.json");
+
+    std::string ScoreFData = "Resources\\MusicScore\\Data\\";
+    ScoreFData += ScoreFile;
+    ScoreFData += ".json";
+
+    std::ifstream stream(ScoreFData.c_str());
     ScoreData = nlohmann::json::parse(stream);
     std::string score = ScoreData["map"];
 
@@ -59,9 +56,7 @@ void loadJson()
     }
 }
 
-Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
-    NomalNote(NomalNoteGraphHandle),
-    Cursor(CursorGraphHandle)
+Scene::Scene(const char *MusicFile = "Lyrith -迷宮リリス-")
 {
     //IO初期化
     input = new Input();
@@ -70,9 +65,12 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
     MouseY = input->GetMousePointY();
 
     //画像初期化
-    Background = LoadGraph("Resources\\Background\\gameBack.png");
-    PauseBack = LoadGraph("Resources\\Background\\PauseBack.png");
-    particle_img = LoadGraph("Resources\\Particle\\particle.png");
+    Background      = LoadGraph ("Resources\\Background\\gameBack.png");
+    PauseBack       = LoadGraph ("Resources\\Background\\PauseBack.png");
+    particle_img    = LoadGraph ("Resources\\Particle\\particle.png");
+    line_img        = LoadGraph ("Resources\\Particle\\tap.png");
+    NomalNote       = LoadGraph ("Resources\\Notes\\NomalNote.png");
+    Cursor          = LoadGraph ("Resources\\Cursor\\Cursor.png");
 
     particle = new Particle*[PARTICLE_QUANTITY];
     for (auto i = 0; i < PARTICLE_QUANTITY; i++) {
@@ -80,7 +78,7 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
     }
 
     //譜面データ初期化
-    loadJson();
+    loadJson(MusicFile);
     PlayScore = 0;
     PosX = new double[MusicScore.size()];
     PosY = new double[MusicScore.size()];
@@ -90,7 +88,10 @@ Scene::Scene(int NomalNoteGraphHandle, int CursorGraphHandle) :
     }
 
     //システム変数初期化
-    MusicHandle = LoadSoundMem("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.mp3");
+    std::string SoundData = "Resources\\MusicScore\\Data\\";
+    SoundData += MusicFile;
+    SoundData += ".mp3";
+    MusicHandle = LoadSoundMem(SoundData.c_str());
     ChangeVolumeSoundMem(70, MusicHandle);
     counter = 0;
     speed = 20.f;
@@ -157,8 +158,8 @@ void Scene::Update()
     MouseX = input->GetMousePointX();
     MouseY = input->GetMousePointY();
     oldClick = ClickFlag;
-    if (input->GetKeyDown(KEY_INPUT_D) || input->GetKeyDown(KEY_INPUT_F) || 
-        input->GetKeyDown(KEY_INPUT_J) || input->GetKeyDown(KEY_INPUT_K) || 
+    if (input->GetKey(KEY_INPUT_D) || input->GetKey(KEY_INPUT_F) || 
+        input->GetKey(KEY_INPUT_J) || input->GetKey(KEY_INPUT_K) || 
         input->GetMouseClick(KEY_INPUT_LEFT) || input->GetMouseClick(KEY_INPUT_RIGHT)) { ClickFlag = true; }
     else { ClickFlag = false; }
 
@@ -174,7 +175,7 @@ void Scene::Update()
     //ノーツ生成
     if (time_sync.GetTime1MSSync() >= (unsigned long long)60000 / BPM * counter) {
         if (MusicScore.size() == counter) { return; }
-        if (MusicScore[counter] == 11) { return; }
+        if (MusicScore[counter] == END_FLAG) { return; }
         if (MusicScore[counter] != 0 && flag[counter] == false) {
             PosY[counter] = -100.0;
             switch (MusicScore[counter]) {
@@ -221,6 +222,13 @@ void Scene::Draw()
 {
     DrawGraph(0, 0, Background, true);
 
+    //エフェクト描画
+    if (ClickFlag) {
+        SetDrawBlendMode(DX_BLENDMODE_ADD, 200);
+        DrawGraph(CursorPosX, 400, line_img, true);
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+    }
+
     //ノーツ描画
     for (auto i = 0; i < MusicScore.size(); i++) {
         if (flag[i] == true) {
@@ -258,9 +266,9 @@ void Scene::Draw()
     }
 
 #ifdef DEBUG
-    DrawStringToHandle(10, 100, /*std::to_string(PlayScore).c_str()*/"迷宮リリス", GetColor(255, 255, 255), Font);
+    DrawStringToHandle(10, 100, std::to_string(PlayScore).c_str(), GetColor(255, 255, 255), Font);
     DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
-    DrawPixel(MouseX, 500, GetColor(255, 255, 255));
+    /*DrawPixel(MouseX, 500, GetColor(255, 255, 255));*/
 #endif // DEBUG
 }
 
@@ -290,22 +298,26 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
         PlayScore += 220;
+        PlayJudge[PERFECT]++;
     }
     else if (Distance < 70) {
         Judge[lane - 1] = "Excellent";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
         PlayScore += 100;
+        PlayJudge[EXCELLENT]++;
     }
     else if (Distance < 80) {
         Judge[lane - 1] = "Good";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
         PlayScore += 50;
+        PlayJudge[GOOD]++;
     }
     else if (Distance >= 80) {
         Judge[lane - 1] = "Bad";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
+        PlayJudge[BAD]++;
     }
 }

@@ -31,6 +31,12 @@
     <Filter Include="Utility\Time">
       <UniqueIdentifier>{c1d2d5df-977f-41d7-966e-d4a9e97a0108}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utility\Effects">
+      <UniqueIdentifier>{2278675a-c08f-4b6d-a5c1-375835ac0230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Title">
+      <UniqueIdentifier>{529e2c10-d162-48f2-b701-59e16b1b64c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp">
@@ -57,6 +63,21 @@
     <ClCompile Include="TimeSync.cpp">
       <Filter>Utility\Time</Filter>
     </ClCompile>
+    <ClCompile Include="MusicSelect.cpp">
+      <Filter>Utility\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>Game\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleBox.cpp">
+      <Filter>Game\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Game\Play</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Game\Play</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Initialize.h">
@@ -82,6 +103,21 @@
     </ClInclude>
     <ClInclude Include="TimeSync.h">
       <Filter>Utility\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicSelect.h">
+      <Filter>Utility\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Game\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleBox.h">
+      <Filter>Game\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Game\Play</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Game\Play</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

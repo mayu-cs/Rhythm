@@ -2,11 +2,20 @@
 #include "IO.h"
 #include "TimeSync.h"
 #include "Collision.h"
+#include "Particle.h"
+#include <nlohmann/json.hpp>
+#include <iostream>
 
 //extern const int WIN_WIDTH;
 const int WIN_WIDTH = 810;
 extern const int WIN_HEIGHT;
 
+#define PERFECT 0
+#define EXCELLENT 1
+#define GOOD 2
+#define BAD 3
+
+#define END_FLAG 11
 #define PARTICLE_QUANTITY 32
 #define LANE_NUM 4 //ƒŒ[ƒ“‚Ì”
 #define BAR_NUM 20 //(‰æ–Ê‚É)“¯‚É‘¶İ‚Å‚«‚é1ƒŒ[ƒ“‚ ‚½‚è‚Ìbar‚ÌÅ‘å”
@@ -24,7 +33,7 @@ constexpr double LANE4_POSITION_X = 572.0 + WIN_WIDTH - (WIN_WIDTH / 4.0) / 2.0 
 class Scene
 {
 public:
-	Scene(int NomalNoteGraphHandle, int CursorGraphHandle);
+	Scene(const char *MusicFile = "Lyrith -–À‹{ƒŠƒŠƒX-");
 	~Scene();
 	void GameStart();
 
@@ -32,7 +41,12 @@ private:
 	Input *input;
 	TimeSync time_sync;
 	Collision collision;
+	nlohmann::json ScoreData;
+	Particle **particle;
+	std::vector<int> MusicScore;
+	std::string Judge[4];
 
+	void loadJson(const char *ScoreFlie);
 	void Update();
 	void Pause();
 	void Draw();
@@ -52,6 +66,7 @@ private:
 
 	//Counter
 	unsigned int PlayScore;
+	unsigned int PlayJudge[4];
 	unsigned int count;
 	unsigned int Trans[4];
 
@@ -78,4 +93,5 @@ private:
 	int particle_img;
 	int PauseBack;
 	int Font;
+	int line_img;
 };
