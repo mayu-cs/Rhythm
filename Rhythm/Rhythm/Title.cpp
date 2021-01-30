@@ -7,10 +7,17 @@ Input *t_input;
 Box box[100];
 Title::Title()
 {
-	t_input = new Input();
-	t_input->Initialize();
-	titleGraph = LoadGraph("Resources\\Background\\titleBack.png");
-	titleCursorGraph = LoadGraph("Resources\\Cursor\\titleCursor.png");
+	alpha				= 255;
+	Vol					= 100;
+	flag				= false;
+	t_input				= new Input();
+	t_input				->Initialize();
+	titleGraph			= LoadGraph("Resources\\Background\\titleBack.png");
+	titleCursorGraph	= LoadGraph("Resources\\Cursor\\titleCursor.png");
+	TitleBGM			= LoadSoundMem("Resources\\GameSound\\TitleBGM.mp3");
+
+	PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
+	ChangeVolumeSoundMem(Vol, TitleBGM);
 }
 
 void Title::start()
@@ -18,7 +25,7 @@ void Title::start()
     while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
     {
 		t_input->Update();
-		if (GetRand(5) == 0)//1/5の確率でパーティクルを生成する
+		if (flag == false && GetRand(5) == 0)//1/5の確率でパーティクルを生成する
 		{
 			for (int i = 0; i < 100; ++i)
 			{
@@ -49,11 +56,11 @@ void Title::start()
 		}
 
 		//シーン推移
-		if (t_input->GetKeyDown(KEY_INPUT_Z))
+		if (t_input->GetKeyDown(KEY_INPUT_SPACE))
 		{
 			if (cursorY == 625)//カーソルがstartの位置にあるとき
 			{
-				break;
+				flag = true;
 			}
 			else//カーソルがendの位置にあるとき
 			{
@@ -61,7 +68,18 @@ void Title::start()
 			}
 		}
 
+		if (flag == true) {
+			Vol -= 1;
+			alpha -= 12;
+			ChangeVolumeSoundMem(Vol, TitleBGM);
+
+			if (Vol <= 0 || alpha <= 0) {
+				break;
+			}
+		}
+
 		//描画処理
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawGraph(0, 0, titleGraph, TRUE);
 		DrawGraph(cursorX, cursorY, titleCursorGraph, TRUE);
 		for (int i = 0; i < 100; ++i)
@@ -69,4 +87,6 @@ void Title::start()
 			box[i].Draw();
 		}
     }
+	StopSoundMem(TitleBGM);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
