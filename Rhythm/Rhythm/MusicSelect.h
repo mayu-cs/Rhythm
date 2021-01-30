@@ -8,6 +8,7 @@ class MusicSelect
 {
 private:
 	int MusicNumber = 1;
+	int oldMusicNumber = 0;
 	int LevelNumber = 0;
 	//グラフィック
 	int Back;
@@ -17,8 +18,14 @@ private:
 	int Music;
 	int Music1;
 
-	bool Musicflag = false;
-	bool Musicflag2 = false;
+	//スクロールさせる際のフラグ
+	bool Musicflag = false;//右
+	bool Musicflag2 = false;//左
+
+	//曲選択中かレベル選択中かの判定フラグ
+	bool determine = false;
+
+
 	//難易度用フラグ
 	int easyflag;
 	int normalflag;
@@ -30,13 +37,26 @@ private:
 
 	bool leftflag = false;
 	bool rightflag = false;
+	//フォント
+	int Font;
+	int LevelFont;
+
+	//サウンド
+	std::string Loadsound;
+	int sound;
+
 
 	Input *input;
 
 	std::vector<std::string> MusicName;
+	std::vector<std::string> MusicSound;
 	std::vector<std::string> Level;
 
+	bool aa = false;
+
 public:
+
+
 	//スクロール
 	void Left();
 	void Center();
@@ -45,12 +65,15 @@ public:
 	~MusicSelect();
 	MusicSelect();
 
-	void LoadSelect();
+	void LoadMusic();
 	void Select();
 	void levelSelect();
 	void SelectDraw();
 	void leveldraw();
 	void NameDraw();
+
+	//本部分
+	void LoadMusicSelect();
 
 	std::string getnum();
 	std::string getlevel();
