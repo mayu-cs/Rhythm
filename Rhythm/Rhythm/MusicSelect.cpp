@@ -2,36 +2,117 @@
 
 //#define TEST
 
-
 MusicSelect::MusicSelect()
 {
 	input = new Input;
 
 	//背景&難易度用グラフィック
-	Back = LoadGraph("selectBack2.png");//背景
-	StarA = LoadGraph("selectStarA.png");//難易度(★)
-	StarB = LoadGraph("selectStarB.png");//難易度(☆)
+	Back = LoadGraph("Resources\\MusicSelect\\selectBack2.png");//背景
+	StarA = LoadGraph("Resources\\MusicSelect\\selectStarA.png");//難易度(★)
+	StarB = LoadGraph("Resources\\MusicSelect\\selectStarB.png");//難易度(☆)
 	//曲名-----
 	MusicName.push_back("曲1");
-	MusicName.push_back("迷宮リリス");
+	MusicName.push_back("Lyrith -迷宮リリス-");
 	MusicName.push_back("曲3");
+	//サウンド------
+	MusicSound.push_back("abc.mp3");
+	MusicSound.push_back("Lyrith -迷宮リリス-.preload.mp3");
+	MusicSound.push_back("曲3");
 	//難易度-----
 	Level.push_back("easy");
 	Level.push_back("normal");
 	Level.push_back("hard");
 	//曲のサムネイル(仮置き)
-	Music = LoadGraph("Music.png");
-	Music1 = LoadGraph("Music1.png");
+	
+	Music1 = LoadGraph("Resources\\MusicSelect\\Music1.png");
+
+	//フォント
+	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING_EDGE);
+	LevelFont = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 25, 8, DX_FONTTYPE_ANTIALIASING_EDGE);
+	//サウンド
+	Loadsound = "Lyrith -迷宮リリス-.preload.mp3";
+	sound = LoadSoundMem(Loadsound.c_str());
+	//ChangeVolumeSoundMem(20,sound);
+
+
+
 }
 
 MusicSelect::~MusicSelect()
 {
 	delete input;
+	StopSoundMem(sound);
 }
 
+void MusicSelect::LoadMusicSelect()
+{
+
+	while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
+	{
+		SelectDraw();
+
+		if (determine == false)
+		{
+			Select();
+
+			if (input->GetKeyDown(KEY_INPUT_SPACE))
+			{
+				determine = true;
+			}
+		}
+		else if (determine == true)
+		{
+			levelSelect();
+
+			if (input->GetKeyDown(KEY_INPUT_SPACE))
+			{
+				break;
+			}
+			if (input->GetKeyDown(KEY_INPUT_BACK))
+			{
+				determine = false;
+			}
+		}
+
+	}
+
+}
+
+//曲の切り替え
+void MusicSelect::LoadMusic()
+{
+
+	Loadsound = MusicSound[MusicNumber].c_str();
+	sound = LoadSoundMem(Loadsound.c_str());
+	ChangeVolumeSoundMem(20, sound);
+	PlaySoundMem(sound, DX_PLAYTYPE_LOOP);
+
+
+}
+
+
+//曲のサムネや難易度の画像表示
 void MusicSelect::SelectDraw()
 {
 	DrawGraph(0, 0, Back, TRUE);
+	//文字の描画
+	NameDraw();
+
+	//スクロール----------
+	Right();
+	Center();
+	Left();
+	DrawExtendGraph(450 + ScrollX[1], 400 - ScrollY[1], 650 + (ScrollX[1] * 1.666667), 600, Music1, TRUE);
+	DrawExtendGraph(750 + ScrollX[2], 200 - ScrollY[2], 1150 + ScrollX[3], 600, Music1, TRUE);
+	DrawExtendGraph(1250 - ScrollX[0], 400 - ScrollY[0], 1450 - (ScrollX[0] * 0.6), 600, Music1, TRUE);
+
+	//レベル選択時に表示
+	if (determine == true)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_MULA, 150);
+		DrawBox(0, 0, 1920, 1080, GetColor(40, 40, 40), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 
 	//難易度表示--------
 	DrawGraph(750, 850, easyflag, TRUE);
@@ -44,27 +125,37 @@ void MusicSelect::SelectDraw()
 	if (LevelNumber == 2)hardflag = StarA;
 	else hardflag = StarB;
 
-	//文字の描画
-	NameDraw();
 
-	//スクロール----------
-	Right();
-	Center();
-	Left();
-	DrawExtendGraph(450 + ScrollX[1], 400 - ScrollY[1], 650 + (ScrollX[1] * 1.666667), 600, Music1, TRUE);
-	DrawExtendGraph(750 + ScrollX[2], 200 - ScrollY[2], 1150 + ScrollX[3], 600, Music1, TRUE);
-	DrawExtendGraph(1250 - ScrollX[0], 400 - ScrollY[0], 1450 - (ScrollX[0] * 0.6), 600, Music1, TRUE);
 }
 
 //難易度＆曲名の表示
 void MusicSelect::NameDraw()
 {
-	DrawFormatString(750, 950, GetColor(255, 255, 255), "EASY", true);
-	DrawFormatString(900, 950, GetColor(255, 255, 255), "NORMAL", true);
-	DrawFormatString(1050, 950, GetColor(255, 255, 255), "HARD", true);
+	DrawStringToHandle(750, 950, "EASY", GetColor(255, 255, 255), LevelFont);
+	DrawStringToHandle(880, 950, "NORMAL", GetColor(255, 255, 255), LevelFont);
+	DrawStringToHandle(1050, 950, "HARD", GetColor(255, 255, 255), LevelFont);
+	//DrawFormatString(750, 950, GetColor(255, 255, 255), "EASY",true);
+	//DrawFormatString(900, 950, GetColor(255, 255, 255), "NORMAL",true);
+	//DrawFormatString(1050, 950, GetColor(255, 255, 255), "HARD",true);
 
 	if (!Musicflag && !Musicflag2)
-		DrawString(800, 700, MusicName[MusicNumber].c_str(), GetColor(255, 255, 255), TRUE);
+		DrawStringToHandle(680, 660, MusicName[MusicNumber].c_str(), GetColor(255, 255, 255), Font);
+
+	//左右どちらかが押されて曲が変わったら読み込み
+	if (oldMusicNumber != MusicNumber)
+	{
+		StopSoundMem(sound);
+
+		LoadMusic();
+		aa = true;
+	}
+	oldMusicNumber = MusicNumber;
+
+	//ただの確認用↓
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "%s", Loadsound.c_str());
+	DrawFormatString(0, 20, GetColor(255, 255, 255), "%d", MusicNumber);
+	DrawFormatString(0, 40, GetColor(255, 255, 255), "%d", oldMusicNumber);
+
 
 }
 
@@ -89,7 +180,6 @@ void MusicSelect::leveldraw()
 
 #endif
 
-
 //曲情報を返す
 std::string MusicSelect::getnum()
 {
@@ -99,7 +189,6 @@ std::string MusicSelect::getlevel()
 {
 	return Level[LevelNumber];
 }
-
 
 //曲名とレベルの選択
 void MusicSelect::levelSelect()
@@ -123,20 +212,24 @@ void MusicSelect::Select()
 
 	if (input->GetKeyDown(KEY_INPUT_RIGHT))
 	{
-
-		if (!Musicflag2) {
-			Musicflag = true;
+		if (2 > MusicNumber)
+		{
+			if (!Musicflag2) {
+				Musicflag = true;
+			}
 		}
 	}
 	else if (input->GetKeyDown(KEY_INPUT_LEFT))
 	{
-
-		if (!Musicflag) {
-			Musicflag2 = true;
+		if (0 < MusicNumber)
+		{
+			if (!Musicflag) {
+				Musicflag2 = true;
+			}
 		}
 	}
-	if (2 <= MusicNumber) MusicNumber = 2;
-	if (0 >= MusicNumber) MusicNumber = 0;
+	/*if (2 <= MusicNumber) MusicNumber = 2;
+	if (0 >= MusicNumber) MusicNumber = 0;*/
 }
 
 //スクロールの動き
