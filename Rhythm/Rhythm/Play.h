@@ -82,6 +82,8 @@ private:
 	bool SoundFlag;
 
 	//images
+	unsigned int alpha;
+
 	double *PosX;
 	double *PosY;
 	bool *flag;
