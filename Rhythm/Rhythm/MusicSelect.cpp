@@ -27,8 +27,8 @@ MusicSelect::MusicSelect()
 	Music1 = LoadGraph("Resources\\MusicSelect\\Music1.png");
 
 	//フォント
-	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING);
-	LevelFont = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 25, 8, DX_FONTTYPE_ANTIALIASING);
+	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING_EDGE);
+	LevelFont = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 25, 8, DX_FONTTYPE_ANTIALIASING_EDGE);
 	//サウンド
 	Loadsound = "Lyrith -迷宮リリス-.preload.mp3";
 	sound = LoadSoundMem(Loadsound.c_str());
