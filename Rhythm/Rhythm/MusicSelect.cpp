@@ -4,6 +4,10 @@ MusicSelect::MusicSelect()
 {
 	input = new Input;
 
+	alpha = 255;
+	Vol = 100;
+	flag = false;
+
 	//背景&難易度用グラフィック
 	Back = LoadGraph("Resources\\MusicSelect\\selectBack2.png");//背景
 	StarA = LoadGraph("Resources\\MusicSelect\\selectStarA.png");//難易度(★)
@@ -36,14 +40,13 @@ MusicSelect::MusicSelect()
 MusicSelect::~MusicSelect()
 {
 	delete input;
-	
 }
 
 void MusicSelect::LoadMusicSelect()
 {
 	while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
 	{
-
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		SelectDraw();
 
 		if (determine == false)
@@ -61,21 +64,32 @@ void MusicSelect::LoadMusicSelect()
 
 			if (input->GetKeyDown(KEY_INPUT_SPACE))
 			{
-				break;
+				flag = true;
 			}
 			if (input->GetKeyDown(KEY_INPUT_BACK))
 			{
 				determine = false;
 			}
 		}
+
+		if (flag == true)
+		{
+			Vol -= 1;
+			alpha -= 12;
+			ChangeVolumeSoundMem(Vol, sound);
+
+			if (Vol <= 0 || alpha <= 0) {
+				break;
+			}
+		}
 	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	StopSoundMem(sound);
 }
 
 //曲の切り替え
 void MusicSelect::LoadMusic()
 {
-
 	Loadsound = MusicSound[MusicNumber].c_str();
 	sound = LoadSoundMem(Loadsound.c_str());
 	ChangeVolumeSoundMem(100, sound);
@@ -103,7 +117,7 @@ void MusicSelect::SelectDraw()
 	{
 		SetDrawBlendMode(DX_BLENDMODE_MULA, 150);
 		DrawBox(0, 0, 1920, 1080, GetColor(40, 40, 40), TRUE);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	}
 
 	//難易度表示--------

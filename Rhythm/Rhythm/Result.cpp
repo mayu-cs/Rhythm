@@ -12,6 +12,7 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	}
 	
 	//背景/フォント素材ロード
+	alpha = 0;
 	LoadDivGraph("Resources\\Font\\number.png", SCORE_SIZE, SCORE_SIZE, 1, 30, 44, Score_img);
 	LoadDivGraph("Resources\\Font\\rank.png", EVALUATION_SIZE, EVALUATION_SIZE, 1, 171, 226, Evaluation_img);
 
@@ -22,7 +23,7 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	//得点割合計算
 	if (PlayScore != 0 && Notesize != 0) {
 		Base_MaxScore = Notesize * 220;
-		Percentage = (Base_MaxScore / PlayScore) * 100;
+		Percentage = (PlayScore / Base_MaxScore) * 100;
 	}
 	else {
 		Base_MaxScore = 0;
@@ -34,13 +35,18 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	else if (Percentage > 60) { Evaluation = EVALUATION_B; }
 	else					  { Evaluation = EVALUATION_C; }
 
-	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 60, 0, DX_FONTTYPE_ANTIALIASING);
-	J_Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 40, 0, DX_FONTTYPE_ANTIALIASING);
+	Font	= CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 60, 0, DX_FONTTYPE_ANTIALIASING);
+	J_Font	= CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 40, 0, DX_FONTTYPE_ANTIALIASING);
 }
 
 void Result::Start()
 {
 	while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false) {
+		if (alpha <= 255) {
+			alpha += 5;
+		}
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		//背景
 		DrawGraph(0, 0, Background, false);
 

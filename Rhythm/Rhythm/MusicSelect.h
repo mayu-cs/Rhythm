@@ -7,6 +7,10 @@
 class MusicSelect
 {
 private:
+	unsigned int alpha;
+	unsigned int Vol;
+	bool flag;
+
 	int MusicNumber = 1;
 	int oldMusicNumber = 0;
 	int LevelNumber = 0;

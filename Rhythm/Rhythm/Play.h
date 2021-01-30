@@ -36,14 +36,14 @@ public:
 	void GameStart();
 
 private:
-	std::vector<int> MusicScore;
-	std::string Judge[4];
-	nlohmann::json ScoreData;
+	std::vector<int>	MusicScore;
+	std::string			Judge[4];
+	nlohmann::json		ScoreData;
 
-	Particle **particle;
-	Input *input;
-	TimeSync time_sync;
-	Collision collision;
+	Particle			**particle;
+	Input				*input;
+	TimeSync			time_sync;
+	Collision			collision;
 
 	void loadJson(const char *ScoreFlie);
 	void Update();
@@ -53,14 +53,17 @@ private:
 	void Timing_Judge(const unsigned int lane, const double Distance);
 
 private:
+	//system
+	unsigned int alpha;
+
 	//Position
-	int MouseX;
-	int MouseY;
-	int CursorPosX;
-	double Distance;
-	double JudgePosX[4];
-	double JudgePosY[4];
-	const int CursorPosY = 790;
+	int			MouseX;
+	int			MouseY;
+	int			CursorPosX;
+	double		Distance;
+	double		JudgePosX[4];
+	double		JudgePosY[4];
+	const int	CursorPosY = 790;
 
 	//Counter
 	unsigned int ActiveNotes_Counter;
@@ -77,16 +80,14 @@ private:
 	bool EndFlag;
 
 	//Sounds
-	double BPM;
-	double speed;
-	bool SoundFlag;
+	double	BPM;
+	double	speed;
+	bool	SoundFlag;
 
 	//images
-	unsigned int alpha;
-
-	double *PosX;
-	double *PosY;
-	bool *flag;
+	double	*PosX;
+	double	*PosY;
+	bool	*flag;
 
 	int Cursor;
 	int NomalNote;

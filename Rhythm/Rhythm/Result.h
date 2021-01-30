@@ -25,6 +25,7 @@ private:
 	int Evaluation_img[EVALUATION_SIZE];
 	int Score_img[SCORE_SIZE];
 
+	unsigned int	alpha;
 	unsigned int	PlayScore;
 	unsigned int	MaxCombo;
 	unsigned int	Judge[4];

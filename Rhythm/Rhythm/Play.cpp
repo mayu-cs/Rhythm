@@ -105,6 +105,7 @@ Scene::Scene(const char *MusicFile)
     SoundFlag           = false;
     EndFlag             = false;
     ActiveNotes_Counter = 0;
+    alpha               = 0;
 
     //フォント
     Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 40, 8, DX_FONTTYPE_ANTIALIASING);
@@ -135,16 +136,12 @@ void Scene::GameStart()
     time_sync.SetBaseTime();
     while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
     {
-        //一定BPM8拍でリザルト画面へ
-        if (EndCounter == 8) {
-            break;
-        }
-
         //入力初期化
         input->Update();
 
         if (PauseFlag == false) {
             Update();
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
             Draw();
             ClumpCursor();
         }
@@ -160,11 +157,27 @@ void Scene::GameStart()
         if (input->GetKeyDown(KEY_INPUT_ESCAPE)) {
             DxLib_End();
         }
+
+        if (EndCounter >= 8) {
+            alpha -= 5;
+
+            if (alpha <= 0) {
+                break;
+            }
+        }
+        else {
+            if (alpha != 255) {
+                alpha += 5;
+            }
+        }
     }
 
     Result result(PlayMaxCombo, PlayJudge, PlayScore, ActiveNotes_Counter);
     StopSoundMem(MusicHandle);
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
     result.Start();
+
+    return;
 }
 
 void Scene::Update()
@@ -261,7 +274,7 @@ void Scene::Draw()
     if (ClickFlag) {
         SetDrawBlendMode(DX_BLENDMODE_ADD, 200);
         DrawGraph(CursorPosX, 400, line_img, true);
-        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
     }
 
     //ノーツ描画
@@ -295,7 +308,7 @@ void Scene::Draw()
             }
             JudgePosY[i]--;
             Trans[i] -= 4;
-            SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
         }
     }
 

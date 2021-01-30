@@ -7,7 +7,7 @@ Input *t_input;
 Box box[100];
 Title::Title()
 {
-	alpha				= 255;
+	alpha				= 0;
 	Vol					= 100;
 	flag				= false;
 	t_input				= new Input();
@@ -75,6 +75,11 @@ void Title::start()
 
 			if (Vol <= 0 || alpha <= 0) {
 				break;
+			}
+		}
+		else {
+			if (alpha != 255) {
+				alpha += 5;
 			}
 		}
 
