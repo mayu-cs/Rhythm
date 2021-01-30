@@ -1,5 +1,6 @@
 #include "Play.h"
 #include "DxLib.h"
+#include "Result.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -29,6 +30,7 @@ std::vector<std::string> S_Split(std::string str, char key)
     return result;
 }
 
+//Load json score data
 void Scene::loadJson(const char *ScoreFile)
 {
     //譜面読み込み/整形
@@ -39,6 +41,8 @@ void Scene::loadJson(const char *ScoreFile)
     std::ifstream stream(ScoreFData.c_str());
     ScoreData = nlohmann::json::parse(stream);
     std::string score = ScoreData["map"];
+    std::string BPM_Cache = ScoreData["BPM"];
+    BPM = std::stoi(BPM_Cache);
 
     //削除文字
     char chars[] = "\"";
@@ -55,6 +59,7 @@ void Scene::loadJson(const char *ScoreFile)
     }
 }
 
+//Constructor
 Scene::Scene(const char *MusicFile)
 {
     //IO初期化
@@ -88,14 +93,17 @@ Scene::Scene(const char *MusicFile)
 
     //システム変数初期化
     std::string SoundData = "Resources\\MusicScore\\Data\\";
-    SoundData += MusicFile;
-    SoundData += ".mp3";
+    SoundData   = MusicFile;
+    SoundData   += ".mp3";
     MusicHandle = LoadSoundMem(SoundData.c_str());
     ChangeVolumeSoundMem(70, MusicHandle);
-    counter = 0;
-    speed = 20.f;
-    BPM = 177;
-    SoundFlag = false;
+    counter     = 0;
+    EndCounter  = 0;
+    speed       = 20.f;
+    PlayCombo = 0;
+    PlayMaxCombo = 0;
+    SoundFlag   = false;
+    EndFlag     = false;
 
     //フォント
     Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 40, 8, DX_FONTTYPE_ANTIALIASING_EDGE);
@@ -111,6 +119,7 @@ Scene::Scene(const char *MusicFile)
     }
 }
 
+//Destructor
 Scene::~Scene()
 {
     delete input;
@@ -121,10 +130,16 @@ Scene::~Scene()
 
 void Scene::GameStart()
 {
+    //初期時間セット
     time_sync.SetBaseTime();
-
     while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
     {
+        //一定BPM8拍でリザルト画面へ
+        if (EndCounter == 8) {
+            break;
+        }
+
+        //入力初期化
         input->Update();
 
         if (PauseFlag == false) {
@@ -145,15 +160,25 @@ void Scene::GameStart()
             DxLib_End();
         }
     }
+
+    Result result(PlayMaxCombo, PlayJudge, 2200, 10);
+    result.Start();
 }
 
 void Scene::Update()
 {
+    //最大Combo数上書き
+    if (PlayCombo < PlayMaxCombo) {
+        PlayMaxCombo = PlayCombo;
+    }
+
+    //1拍待ってから曲を流す(Adjust)
     if (counter == 1 && SoundFlag == false) {
         PlaySoundMem(MusicHandle, DX_PLAYTYPE_BACK);
         SoundFlag = true;
     }
 
+    //入力初期化
     MouseX = input->GetMousePointX();
     MouseY = input->GetMousePointY();
     oldClick = ClickFlag;
@@ -173,17 +198,22 @@ void Scene::Update()
 
     //ノーツ生成
     if (time_sync.GetTime1MSSync() >= (unsigned long long)60000 / BPM * counter) {
-        if (MusicScore.size() == counter) { return; }
-        if (MusicScore[counter] == END_FLAG) { return; }
-        if (MusicScore[counter] != 0 && flag[counter] == false) {
-            PosY[counter] = -100.0;
-            switch (MusicScore[counter]) {
+        if (EndFlag == true) {
+            //終了カウンタ加算
+            EndCounter++;
+        }
+        else {
+            if (MusicScore[counter] == END_FLAG) { EndFlag = true; }
+            if (MusicScore[counter] != NULL && MusicScore[counter] != END_FLAG && flag[counter] == false) {
+                PosY[counter] = -100.0;
+                switch (MusicScore[counter]) {
                 case 1: PosX[counter] = LANE1_POSITION_X; break;
                 case 2: PosX[counter] = LANE2_POSITION_X; break;
                 case 3: PosX[counter] = LANE3_POSITION_X; break;
                 case 4: PosX[counter] = LANE4_POSITION_X; break;
+                }
+                flag[counter] = true;
             }
-            flag[counter] = true;
         }
         counter++;
     }
@@ -197,6 +227,7 @@ void Scene::Update()
         PosY[i] += speed;
         if (PosY[i] > WIN_HEIGHT + 10.0) {
             flag[i] = false;
+            PlayJudge[BAD]++;
         }
 
         //クリック処理
@@ -207,6 +238,8 @@ void Scene::Update()
             Timing_Judge(MusicScore[i], Distance);
         }
     }
+    if (EndFlag == true) { return; }
+    
 }
 
 void Scene::Pause()
@@ -230,9 +263,8 @@ void Scene::Draw()
 
     //ノーツ描画
     for (auto i = 0; i < MusicScore.size(); i++) {
-        if (flag[i] == true) {
-            DrawGraph(PosX[i], PosY[i], NomalNote, true);
-        }
+        if (flag[i] == false) { continue; }
+        DrawGraph(PosX[i], PosY[i], NomalNote, true);
     }
 
     //パーティクル描画
@@ -298,6 +330,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         Trans[lane - 1] = 255;
         PlayScore += 220;
         PlayJudge[PERFECT]++;
+        PlayCombo++;
     }
     else if (Distance < 70) {
         Judge[lane - 1] = "Excellent";
@@ -305,6 +338,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         Trans[lane - 1] = 255;
         PlayScore += 100;
         PlayJudge[EXCELLENT]++;
+        PlayCombo++;
     }
     else if (Distance < 80) {
         Judge[lane - 1] = "Good";
@@ -312,11 +346,13 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         Trans[lane - 1] = 255;
         PlayScore += 50;
         PlayJudge[GOOD]++;
+        PlayCombo++;
     }
     else if (Distance >= 80) {
         Judge[lane - 1] = "Bad";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
         PlayJudge[BAD]++;
+        PlayCombo = 0;
     }
 }

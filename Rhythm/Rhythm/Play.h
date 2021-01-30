@@ -54,7 +54,6 @@ private:
 
 private:
 	//Position
-	int counter;
 	int MouseX;
 	int MouseY;
 	int CursorPosX;
@@ -64,8 +63,8 @@ private:
 	const int CursorPosY = 790;
 
 	//Counter
-	unsigned int PlayScore;
-	unsigned int PlayJudge[4];
+	unsigned int counter;
+	unsigned int EndCounter;
 	unsigned int count;
 	unsigned int Trans[4];
 
@@ -74,6 +73,7 @@ private:
 	bool oldClick = false;
 	bool Particle_Flag = false;
 	bool PauseFlag = false;
+	bool EndFlag;
 
 	//Sounds
 	double BPM;
@@ -93,4 +93,10 @@ private:
 	int PauseBack;
 	int Font;
 	int line_img;
+
+	//judge
+	unsigned int PlayCombo;
+	unsigned int PlayMaxCombo;
+	unsigned int PlayScore;
+	unsigned int PlayJudge[4];
 };
