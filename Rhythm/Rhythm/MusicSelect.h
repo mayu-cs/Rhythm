@@ -52,11 +52,7 @@ private:
 	std::vector<std::string> MusicSound;
 	std::vector<std::string> Level;
 
-	bool aa = false;
-
 public:
-
-
 	//ƒXƒNƒ[ƒ‹
 	void Left();
 	void Center();
@@ -79,4 +75,3 @@ public:
 	std::string getlevel();
 
 };
-

@@ -1,7 +1,5 @@
 #include "MusicSelect.h"
 
-//#define TEST
-
 MusicSelect::MusicSelect()
 {
 	input = new Input;
@@ -27,15 +25,12 @@ MusicSelect::MusicSelect()
 	Music1 = LoadGraph("Resources\\MusicSelect\\Music1.png");
 
 	//フォント
-	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING_EDGE);
-	LevelFont = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 25, 8, DX_FONTTYPE_ANTIALIASING_EDGE);
+	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING);
+	LevelFont = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 25, 8, DX_FONTTYPE_ANTIALIASING);
 	//サウンド
 	Loadsound = "Lyrith -迷宮リリス-.preload.mp3";
 	sound = LoadSoundMem(Loadsound.c_str());
 	//ChangeVolumeSoundMem(20,sound);
-
-
-
 }
 
 MusicSelect::~MusicSelect()
@@ -83,11 +78,8 @@ void MusicSelect::LoadMusic()
 
 	Loadsound = MusicSound[MusicNumber].c_str();
 	sound = LoadSoundMem(Loadsound.c_str());
-	ChangeVolumeSoundMem(20, sound);
+	ChangeVolumeSoundMem(100, sound);
 	PlaySoundMem(sound, DX_PLAYTYPE_LOOP);
-
-	aa = false;
-
 }
 
 
@@ -134,9 +126,6 @@ void MusicSelect::NameDraw()
 	DrawStringToHandle(750, 950, "EASY", GetColor(255, 255, 255), LevelFont);
 	DrawStringToHandle(880, 950, "NORMAL", GetColor(255, 255, 255), LevelFont);
 	DrawStringToHandle(1050, 950, "HARD", GetColor(255, 255, 255), LevelFont);
-	//DrawFormatString(750, 950, GetColor(255, 255, 255), "EASY",true);
-	//DrawFormatString(900, 950, GetColor(255, 255, 255), "NORMAL",true);
-	//DrawFormatString(1050, 950, GetColor(255, 255, 255), "HARD",true);
 
 	if (!Musicflag && !Musicflag2)
 		DrawStringToHandle(680, 660, MusicName[MusicNumber].c_str(), GetColor(255, 255, 255), Font);
@@ -147,18 +136,17 @@ void MusicSelect::NameDraw()
 		StopSoundMem(sound);
 
 		LoadMusic();
-		aa = true;
 	}
 	oldMusicNumber = MusicNumber;
 
+#ifdef DEBUG
 	//ただの確認用↓
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "%s", Loadsound.c_str());
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "%d", MusicNumber);
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "%d", oldMusicNumber);
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "%d", aa);
-
+#endif // DEBUG
 }
-
 
 #ifdef TEST
 
@@ -177,7 +165,6 @@ void MusicSelect::leveldraw()
 	if (LevelNumber == 2)hardflag = StarA;
 	else hardflag = StarB;
 }
-
 #endif
 
 //曲情報を返す
@@ -378,12 +365,3 @@ void MusicSelect::Right()//左から右へのスクロール
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
