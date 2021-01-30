@@ -63,6 +63,7 @@ private:
 	const int CursorPosY = 790;
 
 	//Counter
+	unsigned int ActiveNotes_Counter;
 	unsigned int counter;
 	unsigned int EndCounter;
 	unsigned int count;
