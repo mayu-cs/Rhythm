@@ -14,7 +14,7 @@ public:
 		SetGraphMode(WIN_WIDTH, WIN_HEIGHT, 32);
 		SetWindowSizeChangeEnableFlag(FALSE, FALSE);
 		SetWindowSizeExtendRate(1.0);
-		SetBackgroundColor(30, 30, 30);
+		SetBackgroundColor(10, 10, 10);
 		SetWaitVSyncFlag(TRUE);
 		if (DxLib_Init() == -1) { return -1; }
 
