@@ -16,7 +16,7 @@ MusicSelect::MusicSelect()
 	MusicName.push_back("曲3");
 	//サウンド------
 	MusicSound.push_back("abc.mp3");
-	MusicSound.push_back("Lyrith -迷宮リリス-.preload.mp3");
+	MusicSound.push_back("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.preload.mp3");
 	MusicSound.push_back("曲3");
 	//難易度-----
 	Level.push_back("easy");
@@ -41,7 +41,7 @@ MusicSelect::MusicSelect()
 MusicSelect::~MusicSelect()
 {
 	delete input;
-	StopSoundMem(sound);
+	
 }
 
 void MusicSelect::LoadMusicSelect()
@@ -74,7 +74,7 @@ void MusicSelect::LoadMusicSelect()
 			}
 		}
 	}
-
+	StopSoundMem(sound);
 }
 
 //曲の切り替え
