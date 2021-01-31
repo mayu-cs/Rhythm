@@ -260,7 +260,7 @@ void Scene::Update()
         //ÉNÉäÉbÉNèàóù
         if (ClickFlag && collision.CircleCollision(
             PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 4.0,
-            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 18.0, &Distance)) {
+            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 20.0, &Distance)) {
             flag[i] = false;
             Timing_Judge(MusicScore[i], Distance);
         }
@@ -370,7 +370,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance < 70) {
+    else if (Distance < 75) {
         Judge[lane - 1] = "Excellent";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -379,7 +379,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance < 75) {
+    else if (Distance < 85) {
         Judge[lane - 1] = "Good";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -388,7 +388,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance >= 80) {
+    else if (Distance >= 85) {
         Judge[lane - 1] = "Bad";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
