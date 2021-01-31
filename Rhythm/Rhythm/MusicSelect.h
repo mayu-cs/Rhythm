@@ -20,6 +20,7 @@ private:
 	int StarB;
 	//曲のグラフィック
 	int Music[3];
+	int MusicTitle[3];
 
 	//難易度グラフィック
 	int LevelText;

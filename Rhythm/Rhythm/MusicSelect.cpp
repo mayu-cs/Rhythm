@@ -36,6 +36,7 @@ MusicSelect::MusicSelect()
 	MusicName.push_back("君色ジャンプ");
 	MusicName.push_back("Lyrith -迷宮リリス-");
 	MusicName.push_back("Evanescent");
+	LoadDivGraph("Resources\\Background\\songTitle.png", 3, 1, 3, 800, 130, MusicTitle);
 	//サウンド------
 	MusicSound.push_back("Resources\\MusicScore\\Data\\君色ジャンプ.preload.mp3");
 	MusicSound.push_back("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.preload.mp3");
@@ -45,18 +46,12 @@ MusicSelect::MusicSelect()
 	Level.push_back("normal");
 	Level.push_back("hard");
 	//曲のサムネイル(仮置き)
-
 	Music[0] = LoadGraph("Resources\\MusicScore\\Data\\");
 	Music[1] = LoadGraph("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.png");
 	Music[2] = LoadGraph("Resources\\MusicScore\\Data\\Evanescent.jpg");
-
-	//フォント
-	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING);
-	
 	//サウンド
 	Loadsound = "Lyrith -迷宮リリス-.preload.mp3";
 	sound = LoadSoundMem(Loadsound.c_str());
-	//ChangeVolumeSoundMem(20,sound);
 }
 
 MusicSelect::~MusicSelect()
@@ -153,7 +148,7 @@ void MusicSelect::SelectDraw()
 	DrawGraph(750, 850, easyflag, TRUE);
 	DrawGraph(900, 850, normalflag, TRUE);
 	DrawGraph(1050, 850, hardflag, TRUE);
-	if (LevelNumber == 0)easyflag = StarA;
+	if (LevelNumber == 0)easyflag = StarA ;
 	else easyflag = StarB;
 	if (LevelNumber == 1)normalflag = StarA;
 	else normalflag = StarB;
@@ -168,8 +163,11 @@ void MusicSelect::NameDraw()
 {
 
 	if (!Musicflag && !Musicflag2)
-		DrawStringToHandle(680, 660, MusicName[MusicNumber].c_str(), GetColor(255, 255, 255), Font);
-
+	{
+		if (MusicNumber == 0)DrawGraph(530, 640, MusicTitle[0], TRUE);
+		if (MusicNumber == 1)DrawGraph(530, 640, MusicTitle[1], TRUE);
+		if (MusicNumber == 2)DrawGraph(530, 640, MusicTitle[2], TRUE);
+	}
 	//左右どちらかが押されて曲が変わったら読み込み
 	if (oldMusicNumber != MusicNumber)
 	{
