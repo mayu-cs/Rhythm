@@ -46,7 +46,7 @@ MusicSelect::MusicSelect()
 	Level.push_back("normal");
 	Level.push_back("hard");
 	//曲のサムネイル(仮置き)
-	Music[0] = LoadGraph("Resources\\MusicScore\\Data\\");
+	Music[0] = LoadGraph("Resources\\MusicScore\\Data\\君色ジャンプ.png");
 	Music[1] = LoadGraph("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.png");
 	Music[2] = LoadGraph("Resources\\MusicScore\\Data\\Doppelganger.png");
 	//サウンド

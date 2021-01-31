@@ -25,6 +25,8 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 				cache	+= ".png";
 	Jacket				= LoadGraph(cache.c_str());
 
+	song = SongName;
+
 	//得点割合計算
 	Base_MaxScore = Notesize * 220;
 	Percentage = ((double)PlayScore / (double)Base_MaxScore) * 100.0;
@@ -49,6 +51,11 @@ int Result::Start()
 		//背景
 		DrawGraph(0, 0, Background, false);
 
+		//曲名
+		if ("君色ジャンプ" == song.c_str())
+		{
+			DrawGraph(0, 0, Title[0], true);
+		}
 		//ジャケット
 		DrawExtendGraph(1150, 250, 1825, 925 , Jacket, true);
 

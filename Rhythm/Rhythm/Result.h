@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 #define SCORE_SIZE			10
 #define DISPLAY_SCORE_SIZE	6
@@ -25,6 +26,8 @@ private:
 	int Title[3];
 	int Evaluation_img[EVALUATION_SIZE];
 	int Score_img[SCORE_SIZE];
+
+	std::string song;
 
 	unsigned int	alpha;
 	unsigned int	PlayScore;
