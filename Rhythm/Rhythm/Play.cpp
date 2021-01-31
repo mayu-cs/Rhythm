@@ -143,6 +143,7 @@ int Scene::GameStart()
     time_sync.SetBaseTime();
     while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
     {
+        break;
         //“ü—Í‰Šú‰»
         input->Update();
 
