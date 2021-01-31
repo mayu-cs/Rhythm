@@ -28,10 +28,10 @@ MusicSelect::MusicSelect()
 	leftflag = false;
 	rightflag = false;
 	//背景&難易度用グラフィック
-	Back = LoadGraph("Resources\\MusicSelect\\selectBack2.png");//背景
-	StarA = LoadGraph("Resources\\MusicSelect\\selectStarA.png");//難易度(★)
-	StarB = LoadGraph("Resources\\MusicSelect\\selectStarB.png");//難易度(☆)
-	LevelText = LoadGraph("Resources\\MusicSelect\\selectLevelText.png");
+	Back = LoadGraph("Resources\\Background\\selectBack2.png");//背景
+	StarA = LoadGraph("Resources\\Background\\selectStarA.png");//難易度(★)
+	StarB = LoadGraph("Resources\\Background\\selectStarB.png");//難易度(☆)
+	LevelText = LoadGraph("Resources\\Background\\selectLevelText.png");
 	//曲名-----
 	MusicName.push_back("君色ジャンプ");
 	MusicName.push_back("Lyrith -迷宮リリス-");
@@ -46,9 +46,9 @@ MusicSelect::MusicSelect()
 	Level.push_back("hard");
 	//曲のサムネイル(仮置き)
 
-	Music[0] = LoadGraph("Resources\\MusicSelect\\");
-	Music[1] = LoadGraph("Resources\\MusicSelect\\Lyrith -迷宮リリス-.png");
-	Music[2] = LoadGraph("Resources\\MusicSelect\\Evanescent.jpg");
+	Music[0] = LoadGraph("Resources\\MusicScore\\Data\\");
+	Music[1] = LoadGraph("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.png");
+	Music[2] = LoadGraph("Resources\\MusicScore\\Data\\Evanescent.jpg");
 
 	//フォント
 	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING);
