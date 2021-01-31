@@ -40,7 +40,7 @@ void Scene::loadJson(const char *ScoreFile)
 
     std::ifstream stream(ScoreFData.c_str());
     ScoreData = nlohmann::json::parse(stream);
-    std::string score = ScoreData["map"];
+    std::string score = ScoreData["normal"];
     std::string BPM_Cache = ScoreData["BPM"];
     BPM = std::stoi(BPM_Cache);
 
@@ -60,7 +60,7 @@ void Scene::loadJson(const char *ScoreFile)
 }
 
 //Constructor
-Scene::Scene(const char *MusicFile)
+Scene::Scene(const char *MusicFile) : SongName(MusicFile)
 {
     //IO初期化
     input           = new Input();
@@ -188,7 +188,7 @@ void Scene::Update()
     }
 
     //1拍待ってから曲を流す(Adjust)
-    if (counter == 1 && SoundFlag == false) {
+    if (counter == 8 && SoundFlag == false) {
         PlaySoundMem(MusicHandle, DX_PLAYTYPE_BACK);
         SoundFlag = true;
     }
@@ -212,7 +212,7 @@ void Scene::Update()
     }
 
     //ノーツ生成
-    if (time_sync.GetTime1MSSync() >= (unsigned long long)60000 / BPM * counter) {
+    if (time_sync.GetTime1MSSync() >= (unsigned long long)15000 / BPM * counter) {
         if (EndFlag == true) {
             //終了カウンタ加算
             EndCounter++;
@@ -249,13 +249,12 @@ void Scene::Update()
         //クリック処理
         if (ClickFlag && collision.CircleCollision(
             PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 2.0,
-            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 100.0, &Distance)) {
+            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 20.0, &Distance)) {
             flag[i] = false;
             Timing_Judge(MusicScore[i], Distance);
         }
     }
     if (EndFlag == true) { return; }
-    
 }
 
 void Scene::Pause()
@@ -269,7 +268,6 @@ void Scene::Pause()
 void Scene::Draw()
 {
     DrawGraph(0, 0, Background, true);
-
     //エフェクト描画
     if (ClickFlag) {
         SetDrawBlendMode(DX_BLENDMODE_ADD, 200);
@@ -312,6 +310,16 @@ void Scene::Draw()
         }
     }
 
+    std::string msg = "score : ";
+    msg += std::to_string(PlayScore);
+    DrawStringToHandle(50, 80, msg.c_str(), GetColor(120, 200, 255), Font);
+    DrawStringToHandle(50, 150, SongName.c_str(), GetColor(120, 200, 255), Font);
+
+    //DEBUG
+    DrawStringToHandle(50, 220, std::to_string(ActiveNotes_Counter).c_str(), GetColor(120, 200, 255), Font);
+
+    DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
+
 #ifdef DEBUG
     DrawStringToHandle(10, 100, std::to_string(PlayScore).c_str(), GetColor(255, 255, 255), Font);
     DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
@@ -340,7 +348,7 @@ void Scene::ClumpCursor()
 
 void Scene::Timing_Judge(const unsigned int lane, const double Distance)
 {
-    if (Distance < 50) {
+    if (Distance < 70) {
         Judge[lane - 1] = "Perfect";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -349,7 +357,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance < 70) {
+    else if (Distance < 80) {
         Judge[lane - 1] = "Excellent";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -358,7 +366,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance < 80) {
+    else if (Distance < 90) {
         Judge[lane - 1] = "Good";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -367,7 +375,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance >= 80) {
+    else if (Distance >= 90) {
         Judge[lane - 1] = "Bad";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;

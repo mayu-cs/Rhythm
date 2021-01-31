@@ -26,8 +26,6 @@ constexpr double LANE2_POSITION_X = 572.0 + (WIN_WIDTH / 4.0 * 3.0) / 2.0 - (105
 constexpr double LANE3_POSITION_X = 572.0 + WIN_WIDTH - ((WIN_WIDTH / 4.0) * 3.0) / 2.0 - (105.0 / 2.0) - 20.0;
 constexpr double LANE4_POSITION_X = 572.0 + WIN_WIDTH - (WIN_WIDTH / 4.0) / 2.0 - (105.0 / 2.0) - 20.0;
 
-#define DEBUG
-
 class Scene
 {
 public:
@@ -38,6 +36,7 @@ public:
 private:
 	std::vector<int>	MusicScore;
 	std::string			Judge[4];
+	std::string			SongName;
 	nlohmann::json		ScoreData;
 
 	Particle			**particle;

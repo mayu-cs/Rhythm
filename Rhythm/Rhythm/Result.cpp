@@ -30,8 +30,8 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 		Percentage = 0;
 	}
 
-	if		(Percentage > 90) { Evaluation = EVALUATION_S; }
-	else if (Percentage > 80) { Evaluation = EVALUATION_A; }
+	if		(Percentage > 85) { Evaluation = EVALUATION_S; }
+	else if (Percentage > 75) { Evaluation = EVALUATION_A; }
 	else if (Percentage > 60) { Evaluation = EVALUATION_B; }
 	else					  { Evaluation = EVALUATION_C; }
 
