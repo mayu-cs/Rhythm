@@ -11,11 +11,15 @@ MusicSelect::MusicSelect()
 	MusicNumber = 1;
 	oldMusicNumber = 0;
 	LevelNumber = 0;
-
-	ScrollX[4] = { 0 };
-	ScrollY[3] = { 0 };
-	count[3] = { 0 };
-
+	for (int i = 0; i < 4; i++)
+	{
+		ScrollX[i] = { 0 };
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		ScrollY[i] = { 0 };
+		count[i] = { 0 };
+	}
 	Musicflag = false;
 	Musicflag2 = false;
 	
@@ -27,14 +31,15 @@ MusicSelect::MusicSelect()
 	Back = LoadGraph("Resources\\MusicSelect\\selectBack2.png");//背景
 	StarA = LoadGraph("Resources\\MusicSelect\\selectStarA.png");//難易度(★)
 	StarB = LoadGraph("Resources\\MusicSelect\\selectStarB.png");//難易度(☆)
+	LevelText = LoadGraph("Resources\\MusicSelect\\selectLevelText.png");
 	//曲名-----
-	MusicName.push_back("曲1");
+	MusicName.push_back("君色ジャンプ");
 	MusicName.push_back("Lyrith -迷宮リリス-");
 	MusicName.push_back("曲3");
 	//サウンド------
-	MusicSound.push_back("abc.mp3");
+	MusicSound.push_back("Resources\\MusicScore\\Data\\");
 	MusicSound.push_back("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.preload.mp3");
-	MusicSound.push_back("曲3");
+	MusicSound.push_back("Resources\\MusicScore\\Data\\");
 	//難易度-----
 	Level.push_back("easy");
 	Level.push_back("normal");
@@ -45,7 +50,7 @@ MusicSelect::MusicSelect()
 
 	//フォント
 	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING);
-	LevelFont = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 25, 8, DX_FONTTYPE_ANTIALIASING);
+	
 	//サウンド
 	Loadsound = "Lyrith -迷宮リリス-.preload.mp3";
 	sound = LoadSoundMem(Loadsound.c_str());
@@ -118,7 +123,6 @@ void MusicSelect::LoadMusic()
 	PlaySoundMem(sound, DX_PLAYTYPE_LOOP);
 }
 
-
 //曲のサムネや難易度の画像表示
 void MusicSelect::SelectDraw()
 {
@@ -143,6 +147,7 @@ void MusicSelect::SelectDraw()
 	}
 
 	//難易度表示--------
+	DrawGraph(760, 950, LevelText, TRUE);
 	DrawGraph(750, 850, easyflag, TRUE);
 	DrawGraph(900, 850, normalflag, TRUE);
 	DrawGraph(1050, 850, hardflag, TRUE);
@@ -159,9 +164,6 @@ void MusicSelect::SelectDraw()
 //難易度＆曲名の表示
 void MusicSelect::NameDraw()
 {
-	DrawStringToHandle(750, 950, "EASY", GetColor(255, 255, 255), LevelFont);
-	DrawStringToHandle(880, 950, "NORMAL", GetColor(255, 255, 255), LevelFont);
-	DrawStringToHandle(1050, 950, "HARD", GetColor(255, 255, 255), LevelFont);
 
 	if (!Musicflag && !Musicflag2)
 		DrawStringToHandle(680, 660, MusicName[MusicNumber].c_str(), GetColor(255, 255, 255), Font);

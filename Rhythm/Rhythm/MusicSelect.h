@@ -21,6 +21,8 @@ private:
 	//曲のグラフィック
 	int Music;
 	int Music1;
+	//難易度グラフィック
+	int LevelText;
 
 	//スクロールさせる際のフラグ
 	bool Musicflag;//右
@@ -42,12 +44,10 @@ private:
 	bool rightflag;
 	//フォント
 	int Font;
-	int LevelFont;
 
 	//サウンド
 	std::string Loadsound;
 	int sound;
-
 
 	Input *input;
 
