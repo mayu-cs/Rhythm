@@ -21,14 +21,8 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	Jacket			= LoadGraph("Resources\\MusicScore\\Data\\Lyrith -–À‹{ƒŠƒŠƒX-.png");
 
 	//“¾“_Š„‡ŒvŽZ
-	if (PlayScore != 0 && Notesize != 0) {
-		Base_MaxScore = Notesize * 220;
-		Percentage = (PlayScore / Base_MaxScore) * 100;
-	}
-	else {
-		Base_MaxScore = 0;
-		Percentage = 0;
-	}
+	Base_MaxScore = Notesize * 220;
+	Percentage = ((double)PlayScore / (double)Base_MaxScore) * 100.0;
 
 	if		(Percentage > 85) { Evaluation = EVALUATION_S; }
 	else if (Percentage > 75) { Evaluation = EVALUATION_A; }

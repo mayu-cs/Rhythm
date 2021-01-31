@@ -3,6 +3,7 @@
 #include "TimeSync.h"
 #include "Collision.h"
 #include "Particle.h"
+#include "Transition.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
 
@@ -43,6 +44,7 @@ private:
 	Input				*input;
 	TimeSync			time_sync;
 	Collision			collision;
+	BoxTransitionHeight clear;
 
 	void loadJson(const char *ScoreFlie);
 	void Update();

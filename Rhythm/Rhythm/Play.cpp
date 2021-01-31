@@ -158,7 +158,11 @@ void Scene::GameStart()
             DxLib_End();
         }
 
-        if (EndCounter >= 8) {
+        if (EndCounter >= 100) {
+
+            clear.Update();
+            clear.Draw();
+
             alpha -= 5;
 
             if (alpha <= 0) {
