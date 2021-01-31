@@ -99,13 +99,19 @@ Scene::Scene(const char *MusicFile, const char *level) : SongName(MusicFile)
     ChangeVolumeSoundMem(100, MusicHandle);
     counter             = 0;
     EndCounter          = 0;
-    speed               = 20.f;
     PlayCombo           = 0;
     PlayMaxCombo        = 0;
     SoundFlag           = false;
     EndFlag             = false;
     ActiveNotes_Counter = 0;
     alpha               = 0;
+
+    if (level == "easy" || level == "nomal") {
+        speed = 20.f;
+    }
+    else {
+        speed = 23.f;
+    }
 
     //フォント
     Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 40, 8, DX_FONTTYPE_ANTIALIASING);
@@ -253,8 +259,8 @@ void Scene::Update()
 
         //クリック処理
         if (ClickFlag && collision.CircleCollision(
-            PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 2.0,
-            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 20.0, &Distance)) {
+            PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 4.0,
+            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 18.0, &Distance)) {
             flag[i] = false;
             Timing_Judge(MusicScore[i], Distance);
         }
@@ -321,7 +327,9 @@ void Scene::Draw()
     DrawStringToHandle(50, 150, SongName.c_str(), GetColor(120, 200, 255), Font);
 
     //DEBUG
-    DrawStringToHandle(50, 220, std::to_string(ActiveNotes_Counter).c_str(), GetColor(120, 200, 255), Font);
+    std::string combo_msg = "Combo : ";
+    combo_msg += std::to_string(PlayCombo);
+    DrawStringToHandle(50, 220, combo_msg.c_str(), GetColor(120, 200, 255), Font);
 
     DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
 
@@ -353,7 +361,7 @@ void Scene::ClumpCursor()
 
 void Scene::Timing_Judge(const unsigned int lane, const double Distance)
 {
-    if (Distance < 70) {
+    if (Distance < 65) {
         Judge[lane - 1] = "Perfect";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -362,7 +370,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance < 80) {
+    else if (Distance < 70) {
         Judge[lane - 1] = "Excellent";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -371,7 +379,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance < 90) {
+    else if (Distance < 75) {
         Judge[lane - 1] = "Good";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -380,7 +388,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance >= 90) {
+    else if (Distance >= 80) {
         Judge[lane - 1] = "Bad";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
