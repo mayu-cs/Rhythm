@@ -183,7 +183,7 @@ void Scene::GameStart()
         }
     }
 
-    Result result(PlayMaxCombo, PlayJudge, PlayScore, ActiveNotes_Counter);
+    Result result(PlayMaxCombo, PlayJudge, PlayScore, ActiveNotes_Counter, SongName.c_str());
     StopSoundMem(MusicHandle);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
     result.Start();
@@ -260,7 +260,7 @@ void Scene::Update()
         //ÉNÉäÉbÉNèàóù
         if (ClickFlag && collision.CircleCollision(
             PosX[i] + 198.0 / 2.0, PosY[i] + 198.0 / 2.0, 198.0 / 4.0,
-            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 20.0, &Distance)) {
+            (double)CursorPosX + 100, (double)CursorPosY + 100.0, 18.0, &Distance)) {
             flag[i] = false;
             Timing_Judge(MusicScore[i], Distance);
         }
@@ -361,7 +361,7 @@ void Scene::ClumpCursor()
 
 void Scene::Timing_Judge(const unsigned int lane, const double Distance)
 {
-    if (Distance < 65) {
+    if (Distance < 70) {
         Judge[lane - 1] = "Perfect";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -370,7 +370,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance < 75) {
+    else if (Distance < 78) {
         Judge[lane - 1] = "Excellent";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;

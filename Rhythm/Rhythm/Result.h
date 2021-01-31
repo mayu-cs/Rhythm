@@ -34,6 +34,6 @@ private:
 	unsigned short	Evaluation;
 
 public:
-	Result(const unsigned int MaxCombo, const unsigned int Judge[4], const unsigned int PlayScore, const unsigned int Notesize);
+	Result(const unsigned int MaxCombo, const unsigned int Judge[4], const unsigned int PlayScore, const unsigned int Notesize, const char *SongName);
 	void Start();
 };

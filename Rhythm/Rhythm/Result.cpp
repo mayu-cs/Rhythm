@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const unsigned int PlayScore, const unsigned int Notesize) : 
+Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const unsigned int PlayScore, const unsigned int Notesize, const char *SongName) :
 	MaxCombo(MaxCombo),
 	PlayScore(PlayScore)
 {
@@ -16,9 +16,13 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	LoadDivGraph("Resources\\Font\\number.png", SCORE_SIZE, SCORE_SIZE, 1, 30, 44, Score_img);
 	LoadDivGraph("Resources\\Font\\rank.png", EVALUATION_SIZE, EVALUATION_SIZE, 1, 171, 226, Evaluation_img);
 
-	Background		= LoadGraph("Resources\\Background\\resultBack.png");
-	BackgroundMask	= LoadGraph("Resources\\Background\\resultBox.png");
-	Jacket			= LoadGraph("Resources\\MusicScore\\Data\\Lyrith -ñ¿ã{ÉäÉäÉX-.png");
+	Background			= LoadGraph("Resources\\Background\\resultBack.png");
+	BackgroundMask		= LoadGraph("Resources\\Background\\resultBox.png");
+
+	std::string cache	= "Resources\\MusicScore\\Data\\";
+				cache	+= SongName;
+				cache	+= ".png";
+	Jacket				= LoadGraph(cache.c_str());
 
 	//ìæì_äÑçáåvéZ
 	Base_MaxScore = Notesize * 220;
@@ -57,5 +61,8 @@ void Result::Start()
 		for (auto i = 0; i < 4; i++) {
 			DrawStringToHandle(550, 560 + (i * 57), std::to_string(Judge[i]).c_str(), GetColor(255, 255, 255), J_Font);
 		}
+
+		if (CheckHitKey(KEY_INPUT_Z)) { break; }
+		if (CheckHitKey(KEY_INPUT_ESCAPE)) { DxLib_End(); }
 	}
 }
