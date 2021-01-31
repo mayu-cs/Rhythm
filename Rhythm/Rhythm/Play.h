@@ -43,6 +43,7 @@ private:
 	Particle			**particle;
 	Input				*input;
 	TimeSync			time_sync;
+	TimeSync			pausetime_sync;
 	Collision			collision;
 	BoxTransitionHeight clear;
 
@@ -56,6 +57,7 @@ private:
 private:
 	//system
 	unsigned int alpha;
+	long long	 AdjustTime;
 
 	//Position
 	int			MouseX;
