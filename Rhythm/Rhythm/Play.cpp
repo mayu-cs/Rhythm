@@ -253,6 +253,7 @@ void Scene::Update()
         PosY[i] += speed;
         if (PosY[i] > WIN_HEIGHT + 10.0) {
             flag[i] = false;
+            PlayCombo = 0;
             PlayJudge[BAD]++;
             ActiveNotes_Counter++;
         }
