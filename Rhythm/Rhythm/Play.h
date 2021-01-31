@@ -30,7 +30,7 @@ constexpr double LANE4_POSITION_X = 572.0 + WIN_WIDTH - (WIN_WIDTH / 4.0) / 2.0 
 class Scene
 {
 public:
-	Scene(const char *MusicFile);
+	Scene(const char *ScoreFile, const char *level);
 	~Scene();
 	void GameStart();
 
@@ -46,7 +46,7 @@ private:
 	Collision			collision;
 	BoxTransitionHeight clear;
 
-	void loadJson(const char *ScoreFlie);
+	void loadJson(const char *ScoreFlie, const char *level);
 	void Update();
 	void Pause();
 	void Draw();

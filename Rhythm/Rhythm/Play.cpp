@@ -31,7 +31,7 @@ std::vector<std::string> S_Split(std::string str, char key)
 }
 
 //Load json score data
-void Scene::loadJson(const char *ScoreFile)
+void Scene::loadJson(const char *ScoreFile, const char *level)
 {
     //譜面読み込み/整形
     std::string ScoreFData = "Resources\\MusicScore\\Data\\";
@@ -40,8 +40,8 @@ void Scene::loadJson(const char *ScoreFile)
 
     std::ifstream stream(ScoreFData.c_str());
     ScoreData = nlohmann::json::parse(stream);
-    std::string score = ScoreData["normal"];
-    std::string BPM_Cache = ScoreData["BPM"];
+    std::string score = ScoreData["hard"];
+    std::string BPM_Cache = ScoreData[level];
     BPM = std::stoi(BPM_Cache);
 
     //削除文字
@@ -60,7 +60,7 @@ void Scene::loadJson(const char *ScoreFile)
 }
 
 //Constructor
-Scene::Scene(const char *MusicFile) : SongName(MusicFile)
+Scene::Scene(const char *MusicFile, const char *level) : SongName(MusicFile)
 {
     //IO初期化
     input           = new Input();
@@ -82,7 +82,7 @@ Scene::Scene(const char *MusicFile) : SongName(MusicFile)
     }
 
     //譜面データ初期化
-    loadJson(MusicFile);
+    loadJson(MusicFile, level);
     PlayScore   = 0;
     PosX        = new double[MusicScore.size()];
     PosY        = new double[MusicScore.size()];
@@ -158,10 +158,11 @@ void Scene::GameStart()
             DxLib_End();
         }
 
-        if (EndCounter >= 100) {
-
+        if (EndCounter >= 200) {
             clear.Update();
             clear.Draw();
+        }
+        if (EndCounter >= 300) {
 
             alpha -= 5;
 
