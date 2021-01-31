@@ -10,9 +10,6 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{06d07d56-3469-4520-b5cd-d3f33b91c096}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Menu">
-      <UniqueIdentifier>{bc89226b-6511-49dd-89e0-13b0fb630fce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Result">
       <UniqueIdentifier>{5d858dc5-72e8-4e39-bcd7-70d682786352}</UniqueIdentifier>
     </Filter>
@@ -31,19 +28,16 @@
     <Filter Include="Utility\Time">
       <UniqueIdentifier>{c1d2d5df-977f-41d7-966e-d4a9e97a0108}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utility\Effects">
-      <UniqueIdentifier>{2278675a-c08f-4b6d-a5c1-375835ac0230}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Title">
       <UniqueIdentifier>{529e2c10-d162-48f2-b701-59e16b1b64c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\MusicSelect">
+      <UniqueIdentifier>{2278675a-c08f-4b6d-a5c1-375835ac0230}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp">
       <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Menu.cpp">
-      <Filter>Game\Menu</Filter>
     </ClCompile>
     <ClCompile Include="Start.cpp">
       <Filter>Game\Start</Filter>
@@ -64,7 +58,7 @@
       <Filter>Utility\Time</Filter>
     </ClCompile>
     <ClCompile Include="MusicSelect.cpp">
-      <Filter>Utility\Effects</Filter>
+      <Filter>Game\MusicSelect</Filter>
     </ClCompile>
     <ClCompile Include="Title.cpp">
       <Filter>Game\Title</Filter>
@@ -75,16 +69,13 @@
     <ClCompile Include="Particle.cpp">
       <Filter>Game\Play</Filter>
     </ClCompile>
-    <ClCompile Include="Line.cpp">
+    <ClCompile Include="Transition.cpp">
       <Filter>Game\Play</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Initialize.h">
       <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Menu.h">
-      <Filter>Game\Menu</Filter>
     </ClInclude>
     <ClInclude Include="Start.h">
       <Filter>Game\Start</Filter>
@@ -105,7 +96,7 @@
       <Filter>Utility\Time</Filter>
     </ClInclude>
     <ClInclude Include="MusicSelect.h">
-      <Filter>Utility\Effects</Filter>
+      <Filter>Game\MusicSelect</Filter>
     </ClInclude>
     <ClInclude Include="Title.h">
       <Filter>Game\Title</Filter>
@@ -113,10 +104,10 @@
     <ClInclude Include="ParticleBox.h">
       <Filter>Game\Title</Filter>
     </ClInclude>
-    <ClInclude Include="Line.h">
+    <ClInclude Include="Particle.h">
       <Filter>Game\Play</Filter>
     </ClInclude>
-    <ClInclude Include="Particle.h">
+    <ClInclude Include="Transition.h">
       <Filter>Game\Play</Filter>
     </ClInclude>
   </ItemGroup>
