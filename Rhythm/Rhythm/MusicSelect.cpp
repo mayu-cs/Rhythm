@@ -35,11 +35,11 @@ MusicSelect::MusicSelect()
 	//曲名-----
 	MusicName.push_back("君色ジャンプ");
 	MusicName.push_back("Lyrith -迷宮リリス-");
-	MusicName.push_back("曲3");
+	MusicName.push_back("Evanescent");
 	//サウンド------
-	MusicSound.push_back("Resources\\MusicScore\\Data\\");
+	MusicSound.push_back("Resources\\MusicScore\\Data\\君色ジャンプ.preload.mp3");
 	MusicSound.push_back("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.preload.mp3");
-	MusicSound.push_back("Resources\\MusicScore\\Data\\");
+	MusicSound.push_back("Resources\\MusicScore\\Data\\Evanescent.preload.mp3");
 	//難易度-----
 	Level.push_back("easy");
 	Level.push_back("normal");

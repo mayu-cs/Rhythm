@@ -18,8 +18,9 @@ void Start::start()
 	MusicSelect select;
 	select.LoadMusicSelect();
 	std::string music = select.getnum();
+	std::string level = select.getlevel();
 
-	Scene scene(music.c_str());
+	Scene scene(music.c_str(),level.c_str());
 	//Scene scene("Lyrith -–À‹{ƒŠƒŠƒX-");
 	scene.GameStart();
 }
