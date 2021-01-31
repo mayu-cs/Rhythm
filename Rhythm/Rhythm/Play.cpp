@@ -97,6 +97,7 @@ Scene::Scene(const char *MusicFile, const char *level) : SongName(MusicFile)
     SoundData   += ".mp3";
     MusicHandle = LoadSoundMem(SoundData.c_str());
     ChangeVolumeSoundMem(100, MusicHandle);
+    AdjustTime          = 0;
     counter             = 0;
     EndCounter          = 0;
     PlayCombo           = 0;
@@ -152,12 +153,20 @@ int Scene::GameStart()
             ClumpCursor();
         }
         else {
+            AdjustTime += pausetime_sync.GetTime1MSSync();
             Draw();
             Pause();
+
+            if (input->GetKeyDown(KEY_INPUT_Z)) {
+                PauseFlag = false;
+                PlaySoundMem(MusicHandle, DX_PLAYTYPE_BACK);
+            }
         }
 
         if (input->GetKeyDown(KEY_INPUT_E)) {
             PauseFlag = true;
+            StopSoundMem(MusicHandle);
+            pausetime_sync.SetBaseTime();
         }
 
         if (input->GetKeyDown(KEY_INPUT_ESCAPE)) {
@@ -225,7 +234,7 @@ void Scene::Update()
     }
 
     //ノーツ生成
-    if (time_sync.GetTime1MSSync() >= (unsigned long long)15000 / BPM * counter) {
+    if (time_sync.GetTime1MSSync() - AdjustTime >= (unsigned long long)15000 / BPM * counter) {
         if (EndFlag == true) {
             //終了カウンタ加算
             EndCounter++;

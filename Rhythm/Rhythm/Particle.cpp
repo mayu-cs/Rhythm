@@ -9,8 +9,8 @@ Particle::Particle(const int Handle, double PosX, double PosY, double MinSize, d
 	this->PosY = (double)(PosY + rand() % 150);
 	XSize = MinSize + (double)(rand() * (MaxSize - MinSize + 1.0) / (1.0 + RAND_MAX));
 	YSize = MinSize + (double)(rand() * (MaxSize - MinSize + 1.0) / (1.0 + RAND_MAX));
-	UpPos = (double)((rand() % 20 + 30) / 5.0);
-	Trans = 2;
+	UpPos = ((rand() % 20 + 30.0) / 5.0);
+	Trans = 15;
 	Transfer = 255;
 	Flag = true;
 }
