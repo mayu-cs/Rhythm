@@ -40,8 +40,8 @@ void Scene::loadJson(const char *ScoreFile, const char *level)
 
     std::ifstream stream(ScoreFData.c_str());
     ScoreData = nlohmann::json::parse(stream);
-    std::string score = ScoreData["hard"];
-    std::string BPM_Cache = ScoreData[level];
+    std::string score = ScoreData[level];
+    std::string BPM_Cache = ScoreData["BPM"];
     BPM = std::stoi(BPM_Cache);
 
     //íœ•¶š
