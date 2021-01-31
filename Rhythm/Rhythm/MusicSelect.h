@@ -19,8 +19,8 @@ private:
 	int StarA;
 	int StarB;
 	//曲のグラフィック
-	int Music;
-	int Music1;
+	int Music[3];
+
 	//難易度グラフィック
 	int LevelText;
 

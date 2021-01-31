@@ -46,7 +46,9 @@ MusicSelect::MusicSelect()
 	Level.push_back("hard");
 	//曲のサムネイル(仮置き)
 
-	Music1 = LoadGraph("Resources\\MusicSelect\\Music1.png");
+	Music[0] = LoadGraph("Resources\\MusicSelect\\");
+	Music[1] = LoadGraph("Resources\\MusicSelect\\Lyrith -迷宮リリス-.png");
+	Music[2] = LoadGraph("Resources\\MusicSelect\\Evanescent.jpg");
 
 	//フォント
 	Font = CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 90, 8, DX_FONTTYPE_ANTIALIASING);
@@ -134,9 +136,9 @@ void MusicSelect::SelectDraw()
 	Right();
 	Center();
 	Left();
-	DrawExtendGraph(450 + ScrollX[1], 400 - ScrollY[1], 650 + (ScrollX[1] * 1.666667), 600, Music1, TRUE);
-	DrawExtendGraph(750 + ScrollX[2], 200 - ScrollY[2], 1150 + ScrollX[3], 600, Music1, TRUE);
-	DrawExtendGraph(1250 - ScrollX[0], 400 - ScrollY[0], 1450 - (ScrollX[0] * 0.6), 600, Music1, TRUE);
+	DrawExtendGraph(450 + ScrollX[1], 400 - ScrollY[1], 650 + (ScrollX[1] * 1.666667), 600, Music[0], TRUE);
+	DrawExtendGraph(750 + ScrollX[2], 200 - ScrollY[2], 1150 + ScrollX[3], 600, Music[1], TRUE);
+	DrawExtendGraph(1250 - ScrollX[0], 400 - ScrollY[0], 1450 - (ScrollX[0] * 0.6), 600, Music[2], TRUE);
 
 	//レベル選択時に表示
 	if (determine == true)
