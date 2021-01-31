@@ -35,12 +35,12 @@ MusicSelect::MusicSelect()
 	//曲名-----
 	MusicName.push_back("君色ジャンプ");
 	MusicName.push_back("Lyrith -迷宮リリス-");
-	MusicName.push_back("Evanescent");
+	MusicName.push_back("Doppelganger");
 	LoadDivGraph("Resources\\Background\\songTitle.png", 3, 1, 3, 800, 130, MusicTitle);
 	//サウンド------
 	MusicSound.push_back("Resources\\MusicScore\\Data\\君色ジャンプ.preload.mp3");
 	MusicSound.push_back("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.preload.mp3");
-	MusicSound.push_back("Resources\\MusicScore\\Data\\Evanescent.preload.mp3");
+	MusicSound.push_back("Resources\\MusicScore\\Data\\Doppelganger.preload.mp3");
 	//難易度-----
 	Level.push_back("easy");
 	Level.push_back("normal");
@@ -48,7 +48,7 @@ MusicSelect::MusicSelect()
 	//曲のサムネイル(仮置き)
 	Music[0] = LoadGraph("Resources\\MusicScore\\Data\\");
 	Music[1] = LoadGraph("Resources\\MusicScore\\Data\\Lyrith -迷宮リリス-.png");
-	Music[2] = LoadGraph("Resources\\MusicScore\\Data\\Evanescent.jpg");
+	Music[2] = LoadGraph("Resources\\MusicScore\\Data\\Doppelganger.png");
 	//サウンド
 	Loadsound = "Lyrith -迷宮リリス-.preload.mp3";
 	sound = LoadSoundMem(Loadsound.c_str());
@@ -83,7 +83,7 @@ void MusicSelect::LoadMusicSelect()
 			{
 				flag = true;
 			}
-			if (input->GetKeyDown(KEY_INPUT_BACK))
+			if (input->GetKeyDown(KEY_INPUT_Z))
 			{
 				determine = false;
 			}
@@ -105,6 +105,10 @@ void MusicSelect::LoadMusicSelect()
 			{
 				alpha += 5;
 			}
+		}
+		if (input->GetKey(KEY_INPUT_ESCAPE))
+		{
+			DxLib_End();
 		}
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
