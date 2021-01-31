@@ -11,9 +11,9 @@ private:
 	unsigned int Vol;
 	bool flag;
 
-	int MusicNumber = 1;
-	int oldMusicNumber = 0;
-	int LevelNumber = 0;
+	int MusicNumber;
+	int oldMusicNumber;
+	int LevelNumber;
 	//グラフィック
 	int Back;
 	int StarA;
@@ -23,24 +23,23 @@ private:
 	int Music1;
 
 	//スクロールさせる際のフラグ
-	bool Musicflag = false;//右
-	bool Musicflag2 = false;//左
+	bool Musicflag;//右
+	bool Musicflag2;//左
 
 	//曲選択中かレベル選択中かの判定フラグ
-	bool determine = false;
-
+	bool determine;
 
 	//難易度用フラグ
 	int easyflag;
 	int normalflag;
 	int hardflag;
 	//スクロール
-	int ScrollX[4] = { 0 };
-	int ScrollY[3] = { 0 };
-	int count[3] = { 0 };
+	int ScrollX[4];
+	int ScrollY[3];
+	int count[3];
 
-	bool leftflag = false;
-	bool rightflag = false;
+	bool leftflag;
+	bool rightflag;
 	//フォント
 	int Font;
 	int LevelFont;

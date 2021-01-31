@@ -8,6 +8,21 @@ MusicSelect::MusicSelect()
 	Vol = 100;
 	flag = false;
 
+	MusicNumber = 1;
+	oldMusicNumber = 0;
+	LevelNumber = 0;
+
+	ScrollX[4] = { 0 };
+	ScrollY[3] = { 0 };
+	count[3] = { 0 };
+
+	Musicflag = false;
+	Musicflag2 = false;
+	
+	determine = false;
+
+	leftflag = false;
+	rightflag = false;
 	//背景&難易度用グラフィック
 	Back = LoadGraph("Resources\\MusicSelect\\selectBack2.png");//背景
 	StarA = LoadGraph("Resources\\MusicSelect\\selectStarA.png");//難易度(★)
