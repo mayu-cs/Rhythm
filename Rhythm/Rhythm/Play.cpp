@@ -379,7 +379,7 @@ void Scene::ClumpCursor()
 
 void Scene::Timing_Judge(const unsigned int lane, const double Distance)
 {
-    if (Distance < 70) {
+    if (Distance < 65) {
         Judge[lane - 1] = "Perfect";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
@@ -388,7 +388,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         PlayCombo++;
         ActiveNotes_Counter++;
     }
-    else if (Distance < 78) {
+    else if (Distance < 75) {
         Judge[lane - 1] = "Excellent";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
