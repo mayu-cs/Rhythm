@@ -20,7 +20,7 @@ Title::Title()
 	ChangeVolumeSoundMem(Vol, TitleBGM);
 }
 
-void Title::start()
+int Title::start()
 {
     while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
     {
@@ -56,7 +56,7 @@ void Title::start()
 		}
 
 		//シーン推移
-		if (t_input->GetKeyDown(KEY_INPUT_Z))
+		if (t_input->GetKeyDown(KEY_INPUT_SPACE))
 		{
 			if (cursorY == 625)//カーソルがstartの位置にあるとき
 			{
@@ -91,7 +91,12 @@ void Title::start()
 		{
 			box[i].Draw();
 		}
+
+		if (t_input->GetKeyDown(KEY_INPUT_ESCAPE)) {
+			return -1;
+		}
     }
 	StopSoundMem(TitleBGM);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	return 0;
 }

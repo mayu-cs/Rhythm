@@ -335,16 +335,20 @@ void Scene::Draw()
         }
     }
 
+    //ÉXÉRÉAï`âÊ
     std::string msg = "score : ";
     msg += std::to_string(PlayScore);
     DrawStringToHandle(50, 80, msg.c_str(), GetColor(120, 200, 255), Font);
-    DrawStringToHandle(50, 150, SongName.c_str(), GetColor(120, 200, 255), Font);
 
-    //DEBUG
+    //Comboêîï`âÊ
     std::string combo_msg = "Combo : ";
     combo_msg += std::to_string(PlayCombo);
-    DrawStringToHandle(50, 220, combo_msg.c_str(), GetColor(120, 200, 255), Font);
+    DrawStringToHandle(50, 150, combo_msg.c_str(), GetColor(120, 200, 255), Font);
 
+    //ã»ñºï`âÊ
+    DrawStringToHandle(50, 220, SongName.c_str(), GetColor(120, 200, 255), Font);
+
+    //ÉJÅ[É\Éãï`âÊ
     DrawGraph(MouseX - 100, CursorPosY, Cursor, true);
 
 #ifdef DEBUG
@@ -379,7 +383,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         Judge[lane - 1] = "Perfect";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
-        PlayScore += 220;
+        PlayScore += 880;
         PlayJudge[PERFECT]++;
         PlayCombo++;
         ActiveNotes_Counter++;
@@ -388,7 +392,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         Judge[lane - 1] = "Excellent";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
-        PlayScore += 100;
+        PlayScore += 400;
         PlayJudge[EXCELLENT]++;
         PlayCombo++;
         ActiveNotes_Counter++;
@@ -397,7 +401,7 @@ void Scene::Timing_Judge(const unsigned int lane, const double Distance)
         Judge[lane - 1] = "Good";
         JudgePosY[lane - 1] = 789;
         Trans[lane - 1] = 255;
-        PlayScore += 50;
+        PlayScore += 150;
         PlayJudge[GOOD]++;
         PlayCombo++;
         ActiveNotes_Counter++;

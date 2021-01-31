@@ -26,10 +26,8 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	Jacket				= LoadGraph(cache.c_str());
 
 	//“¾“_Š„‡ŒvŽZ
-	Base_MaxScore = 100;
-	Percentage = 100;
-	/*Base_MaxScore = Notesize * 220;
-	Percentage = ((double)PlayScore / (double)Base_MaxScore) * 100.0;*/
+	Base_MaxScore = Notesize * 880;
+	Percentage = ((double)PlayScore / (double)Base_MaxScore) * 100.0;
 
 	if		(Percentage > 85) { Evaluation = EVALUATION_S; }
 	else if (Percentage > 75) { Evaluation = EVALUATION_A; }

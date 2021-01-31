@@ -15,6 +15,6 @@ private:
 
 public:
 	Title();
-	void start();
+	int start();
 };
 

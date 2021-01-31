@@ -11,23 +11,17 @@ Start::Start() { }
 void Start::start()
 {
 	Title title;
-	title.start();
+	if (title.start() == -1) { return; }
 
 	while (true)
 	{
 		MusicSelect select;
-		if (select.LoadMusicSelect() == -1) {
-			break;
-		}
+		if (select.LoadMusicSelect() == -1) { break; }
+
 		std::string music = select.getnum();
 		std::string level = select.getlevel();
 		Scene scene(music.c_str(), level.c_str());
-		if (scene.GameStart() == -1) {
-			break;
-		}
-
-		if (ProcessMessage() == true) {
-			break;
-		}
+		if (scene.GameStart() == -1) { break; }
+		if (ProcessMessage() == true) { break; }
 	}
 }
