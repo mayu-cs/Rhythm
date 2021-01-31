@@ -3,9 +3,10 @@
 #include <iostream>
 #include <string>
 
-Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const unsigned int PlayScore, const unsigned int Notesize, const char *SongName) :
+Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const unsigned int PlayScore, const unsigned int Notesize, const char *SongName, const int SongNumber) :
 	MaxCombo(MaxCombo),
-	PlayScore(PlayScore)
+	PlayScore(PlayScore),
+	SongNumber(SongNumber)
 {
 	for (auto i = 0; i < 4; i++) {
 		this->Judge[i] = Judge[i];
@@ -19,17 +20,16 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 
 	Background			= LoadGraph("Resources\\Background\\resultBack.png");
 	BackgroundMask		= LoadGraph("Resources\\Background\\resultBox.png");
-
 	std::string cache	= "Resources\\MusicScore\\Data\\";
 				cache	+= SongName;
 				cache	+= ".png";
 	Jacket				= LoadGraph(cache.c_str());
 
-	song = SongName;
-
 	//得点割合計算
-	Base_MaxScore = Notesize * 220;
-	Percentage = ((double)PlayScore / (double)Base_MaxScore) * 100.0;
+	Base_MaxScore = 100;
+	Percentage = 100;
+	/*Base_MaxScore = Notesize * 220;
+	Percentage = ((double)PlayScore / (double)Base_MaxScore) * 100.0;*/
 
 	if		(Percentage > 85) { Evaluation = EVALUATION_S; }
 	else if (Percentage > 75) { Evaluation = EVALUATION_A; }
@@ -51,11 +51,6 @@ int Result::Start()
 		//背景
 		DrawGraph(0, 0, Background, false);
 
-		//曲名
-		if ("君色ジャンプ" == song.c_str())
-		{
-			DrawGraph(0, 0, Title[0], true);
-		}
 		//ジャケット
 		DrawExtendGraph(1150, 250, 1825, 925 , Jacket, true);
 
@@ -69,6 +64,9 @@ int Result::Start()
 		for (auto i = 0; i < 4; i++) {
 			DrawStringToHandle(550, 560 + (i * 57), std::to_string(Judge[i]).c_str(), GetColor(255, 255, 255), J_Font);
 		}
+
+		//曲名
+		DrawExtendGraph(350, 330, 1050, 460, Title[SongNumber], true);
 
 		if (CheckHitKey(KEY_INPUT_Z)) { break; }
 		if (CheckHitKey(KEY_INPUT_ESCAPE)) { return -1; }

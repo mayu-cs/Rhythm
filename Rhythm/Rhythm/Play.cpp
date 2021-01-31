@@ -42,7 +42,9 @@ void Scene::loadJson(const char *ScoreFile, const char *level)
     ScoreData = nlohmann::json::parse(stream);
     std::string score = ScoreData[level];
     std::string BPM_Cache = ScoreData["BPM"];
+    std::string Num_Cache = ScoreData["Number"];
     BPM = std::stoi(BPM_Cache);
+    SongNum = std::stoi(Num_Cache);
 
     //íœ•¶Žš
     char chars[] = "\"";
@@ -143,7 +145,6 @@ int Scene::GameStart()
     time_sync.SetBaseTime();
     while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
     {
-        break;
         //“ü—Í‰Šú‰»
         input->Update();
 
@@ -153,7 +154,7 @@ int Scene::GameStart()
             Draw();
             ClumpCursor();
         }
-        else {
+        /*else {
             AdjustTime += pausetime_sync.GetTime1MSSync();
             Draw();
             Pause();
@@ -162,13 +163,13 @@ int Scene::GameStart()
                 PauseFlag = false;
                 PlaySoundMem(MusicHandle, DX_PLAYTYPE_BACK);
             }
-        }
+        }*/
 
-        if (input->GetKeyDown(KEY_INPUT_E)) {
+        /*if (input->GetKeyDown(KEY_INPUT_E)) {
             PauseFlag = true;
             StopSoundMem(MusicHandle);
             pausetime_sync.SetBaseTime();
-        }
+        }*/
 
         if (input->GetKeyDown(KEY_INPUT_ESCAPE)) {
             return -1;
@@ -193,7 +194,7 @@ int Scene::GameStart()
         }
     }
 
-    Result result(PlayMaxCombo, PlayJudge, PlayScore, ActiveNotes_Counter, SongName.c_str());
+    Result result(PlayMaxCombo, PlayJudge, PlayScore, ActiveNotes_Counter, SongName.c_str(), SongNum);
     StopSoundMem(MusicHandle);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
     if (result.Start() == -1) {

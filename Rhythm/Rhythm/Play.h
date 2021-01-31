@@ -56,6 +56,7 @@ private:
 
 private:
 	//system
+	int			 SongNum;
 	unsigned int alpha;
 	long long	 AdjustTime;
 

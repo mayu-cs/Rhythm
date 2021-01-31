@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 
 #define SCORE_SIZE			10
 #define DISPLAY_SCORE_SIZE	6
@@ -18,6 +17,7 @@
 class Result
 {
 private:
+	int SongNumber;
 	int Font;
 	int J_Font;
 	int Background;
@@ -27,7 +27,6 @@ private:
 	int Evaluation_img[EVALUATION_SIZE];
 	int Score_img[SCORE_SIZE];
 
-	std::string song;
 
 	unsigned int	alpha;
 	unsigned int	PlayScore;
@@ -38,6 +37,6 @@ private:
 	unsigned short	Evaluation;
 
 public:
-	Result(const unsigned int MaxCombo, const unsigned int Judge[4], const unsigned int PlayScore, const unsigned int Notesize, const char *SongName);
+	Result(const unsigned int MaxCombo, const unsigned int Judge[4], const unsigned int PlayScore, const unsigned int Notesize, const char *SongName, const int SongNumber);
 	int Start();
 };
