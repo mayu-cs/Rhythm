@@ -32,7 +32,7 @@ class Scene
 public:
 	Scene(const char *ScoreFile, const char *level);
 	~Scene();
-	void GameStart();
+	int GameStart();
 
 private:
 	std::vector<int>	MusicScore;

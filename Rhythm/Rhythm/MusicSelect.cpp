@@ -59,7 +59,7 @@ MusicSelect::~MusicSelect()
 	delete input;
 }
 
-void MusicSelect::LoadMusicSelect()
+int MusicSelect::LoadMusicSelect()
 {
 	while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false)
 	{
@@ -108,11 +108,12 @@ void MusicSelect::LoadMusicSelect()
 		}
 		if (input->GetKey(KEY_INPUT_ESCAPE))
 		{
-			DxLib_End();
+			return -1;
 		}
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	StopSoundMem(sound);
+	return 0;
 }
 
 //‹È‚ÌØ‚è‘Ö‚¦

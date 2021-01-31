@@ -73,7 +73,7 @@ public:
 	void NameDraw();
 
 	//–{•”•ª
-	void LoadMusicSelect();
+	int LoadMusicSelect();
 
 	std::string getnum();
 	std::string getlevel();

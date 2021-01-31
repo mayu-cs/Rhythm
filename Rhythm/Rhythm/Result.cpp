@@ -38,7 +38,7 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	J_Font	= CreateFontToHandle("˜a“cŒ¤×ŠÛƒSƒVƒbƒN2004ŠG•¶šP", 40, 0, DX_FONTTYPE_ANTIALIASING);
 }
 
-void Result::Start()
+int Result::Start()
 {
 	while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false) {
 		if (alpha <= 255) {
@@ -64,6 +64,7 @@ void Result::Start()
 		}
 
 		if (CheckHitKey(KEY_INPUT_Z)) { break; }
-		if (CheckHitKey(KEY_INPUT_ESCAPE)) { DxLib_End(); }
+		if (CheckHitKey(KEY_INPUT_ESCAPE)) { return -1; }
 	}
+	return 0;
 }

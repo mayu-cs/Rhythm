@@ -136,7 +136,7 @@ Scene::~Scene()
     delete[] flag;
 }
 
-void Scene::GameStart()
+int Scene::GameStart()
 {
     //‰ŠúŠÔƒZƒbƒg
     time_sync.SetBaseTime();
@@ -161,7 +161,7 @@ void Scene::GameStart()
         }
 
         if (input->GetKeyDown(KEY_INPUT_ESCAPE)) {
-            DxLib_End();
+            return -1;
         }
 
         if (EndCounter >= 80) {
@@ -186,9 +186,11 @@ void Scene::GameStart()
     Result result(PlayMaxCombo, PlayJudge, PlayScore, ActiveNotes_Counter, SongName.c_str());
     StopSoundMem(MusicHandle);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-    result.Start();
+    if (result.Start() == -1) {
+        return -1;
+    }
 
-    return;
+    return 0;
 }
 
 void Scene::Update()
@@ -198,7 +200,7 @@ void Scene::Update()
         PlayMaxCombo = PlayCombo;
     }
 
-    //1”‘Ò‚Á‚Ä‚©‚ç‹È‚ğ—¬‚·(Adjust)
+    //Adjust”‘Ò‚Á‚Ä‚©‚ç‹È‚ğ—¬‚·
     if (counter == 8 && SoundFlag == false) {
         PlaySoundMem(MusicHandle, DX_PLAYTYPE_BACK);
         SoundFlag = true;

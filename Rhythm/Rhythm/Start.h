@@ -3,8 +3,6 @@
 class Start
 {
 private:
-	int NomalNote;
-	int Cursor;
 
 public:
 	Start();

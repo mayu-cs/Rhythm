@@ -16,10 +16,18 @@ void Start::start()
 	while (true)
 	{
 		MusicSelect select;
-		select.LoadMusicSelect();
+		if (select.LoadMusicSelect() == -1) {
+			break;
+		}
 		std::string music = select.getnum();
 		std::string level = select.getlevel();
 		Scene scene(music.c_str(), level.c_str());
-		scene.GameStart();
+		if (scene.GameStart() == -1) {
+			break;
+		}
+
+		if (ProcessMessage() == true) {
+			break;
+		}
 	}
 }
