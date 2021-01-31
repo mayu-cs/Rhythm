@@ -22,6 +22,7 @@ private:
 	int Background;
 	int BackgroundMask;
 	int Jacket;
+	int Title[3];
 	int Evaluation_img[EVALUATION_SIZE];
 	int Score_img[SCORE_SIZE];
 

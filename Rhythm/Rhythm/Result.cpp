@@ -15,6 +15,7 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	alpha = 0;
 	LoadDivGraph("Resources\\Font\\number.png", SCORE_SIZE, SCORE_SIZE, 1, 30, 44, Score_img);
 	LoadDivGraph("Resources\\Font\\rank.png", EVALUATION_SIZE, EVALUATION_SIZE, 1, 171, 226, Evaluation_img);
+	LoadDivGraph("Resources\\Background\\songTitle.png", 3, 1, 3, 800, 130, Title);
 
 	Background			= LoadGraph("Resources\\Background\\resultBack.png");
 	BackgroundMask		= LoadGraph("Resources\\Background\\resultBox.png");

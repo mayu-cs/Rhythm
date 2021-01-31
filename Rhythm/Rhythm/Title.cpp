@@ -56,7 +56,7 @@ void Title::start()
 		}
 
 		//シーン推移
-		if (t_input->GetKeyDown(KEY_INPUT_SPACE))
+		if (t_input->GetKeyDown(KEY_INPUT_Z))
 		{
 			if (cursorY == 625)//カーソルがstartの位置にあるとき
 			{
