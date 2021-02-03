@@ -13,17 +13,20 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 	}
 	
 	//背景/フォント素材ロード
-	alpha = 0;
 	LoadDivGraph("Resources\\Font\\number.png", SCORE_SIZE, SCORE_SIZE, 1, 30, 44, Score_img);
 	LoadDivGraph("Resources\\Font\\rank.png", EVALUATION_SIZE, EVALUATION_SIZE, 1, 171, 226, Evaluation_img);
 	LoadDivGraph("Resources\\Background\\songTitle.png", 3, 1, 3, 800, 130, Title);
 
+	ResultBGM			= LoadSoundMem("Resources\\GameSound\\ResultBGM.mp3");
 	Background			= LoadGraph("Resources\\Background\\resultBack.png");
 	BackgroundMask		= LoadGraph("Resources\\Background\\resultBox.png");
 	std::string cache	= "Resources\\MusicScore\\Data\\";
 				cache	+= SongName;
 				cache	+= ".png";
 	Jacket				= LoadGraph(cache.c_str());
+	alpha				= 0;
+	Volume				= 100;
+	Flag				= false;
 
 	//得点割合計算
 	Base_MaxScore = Notesize * 880;
@@ -36,12 +39,17 @@ Result::Result(const unsigned int MaxCombo, const unsigned int Judge[4], const u
 
 	Font	= CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 60, 0, DX_FONTTYPE_ANTIALIASING);
 	J_Font	= CreateFontToHandle("和田研細丸ゴシック2004絵文字P", 40, 0, DX_FONTTYPE_ANTIALIASING);
+
+	ChangeVolumeSoundMem(Volume, ResultBGM);
+	PlaySoundMem(ResultBGM, DX_PLAYTYPE_LOOP);
 }
 
 int Result::Start()
 {
+
+
 	while (ScreenFlip() == false && ProcessMessage() == false && ClearDrawScreen() == false) {
-		if (alpha <= 255) {
+		if (alpha <= 255 && Flag == false) {
 			alpha += 5;
 		}
 
@@ -66,8 +74,20 @@ int Result::Start()
 		//曲名
 		DrawExtendGraph(350, 330, 1050, 460, Title[SongNumber], true);
 
-		if (CheckHitKey(KEY_INPUT_Z)) { break; }
-		if (CheckHitKey(KEY_INPUT_ESCAPE)) { return -1; }
+		if (CheckHitKey(KEY_INPUT_SPACE)) { 
+			Flag = true;
+		}
+
+		if (Flag == true) {
+			ChangeVolumeSoundMem(Volume, ResultBGM);
+			alpha -= 5;
+			Volume -= 2;
+
+			if (alpha <= 1 || Volume <= 1) { break; }
+		}
+
+		if (CheckHitKey(KEY_INPUT_ESCAPE)) { StopSoundMem(ResultBGM); return -1; }
 	}
+	StopSoundMem(ResultBGM);
 	return 0;
 }

@@ -26,8 +26,11 @@ private:
 	int Title[3];
 	int Evaluation_img[EVALUATION_SIZE];
 	int Score_img[SCORE_SIZE];
+	int ResultBGM;
 
+	bool Flag;
 
+	unsigned int	Volume;
 	unsigned int	alpha;
 	unsigned int	PlayScore;
 	unsigned int	MaxCombo;

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "DxLib.h"
 
 extern const int WIN_WIDTH = 1920;
@@ -9,7 +10,7 @@ class Initialize
 public:
 	int components()
 	{
-		SetMainWindowText("Untitled");
+		SetMainWindowText("De •ˆ");
 		ChangeWindowMode(FALSE);
 		SetGraphMode(WIN_WIDTH, WIN_HEIGHT, 32);
 		SetWindowSizeChangeEnableFlag(FALSE, FALSE);

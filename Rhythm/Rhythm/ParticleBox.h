@@ -1,4 +1,5 @@
 #pragma once
+
 extern const int WIN_WIDTH; //ウィンドウ横幅
 extern const int WIN_HEIGHT;//ウィンドウ縦幅
 class Box

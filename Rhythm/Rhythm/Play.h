@@ -4,6 +4,7 @@
 #include "Collision.h"
 #include "Particle.h"
 #include "Transition.h"
+#include "Operation.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
 
@@ -46,6 +47,7 @@ private:
 	TimeSync			pausetime_sync;
 	Collision			collision;
 	BoxTransitionHeight clear;
+	Operation			operation;
 
 	void loadJson(const char *ScoreFlie, const char *level);
 	void Update();

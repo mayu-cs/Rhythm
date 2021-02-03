@@ -1,4 +1,5 @@
 #pragma once
+
 constexpr int Scale = 50;
 class Particle
 {

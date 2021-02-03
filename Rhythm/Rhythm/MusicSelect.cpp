@@ -28,7 +28,7 @@ MusicSelect::MusicSelect()
 	leftflag = false;
 	rightflag = false;
 	//背景&難易度用グラフィック
-	Back = LoadGraph("Resources\\Background\\selectBack2.png");//背景
+	Back = LoadGraph("Resources\\Background\\selectBack.png");//背景
 	StarA = LoadGraph("Resources\\Background\\selectStarA.png");//難易度(★)
 	StarB = LoadGraph("Resources\\Background\\selectStarB.png");//難易度(☆)
 	LevelText = LoadGraph("Resources\\Background\\selectLevelText.png");

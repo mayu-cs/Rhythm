@@ -14,7 +14,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	srand(time(nullptr));
 
-	AddFontResourceEx("和田研細丸ゴシック2004絵文字P.ttf", FR_PRIVATE, NULL);
+	AddFontResourceEx("Resources\\Font\\和田研細丸ゴシック2004絵文字P.ttf", FR_PRIVATE, NULL);
 	Start GameStart;
 	GameStart.start();
 
